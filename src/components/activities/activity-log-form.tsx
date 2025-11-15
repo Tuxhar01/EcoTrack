@@ -46,6 +46,7 @@ import {
   GlassWater,
   ShoppingBag,
   Flame,
+  Fuel
 } from 'lucide-react';
 import { useState } from 'react';
 import { Activity } from '@/lib/types';
@@ -60,12 +61,13 @@ const formSchema = z.object({
     'shopping'
   ]),
   // Travel fields
+  travelFuelType: z.string().optional(),
   vehicleType: z.string().optional(),
   distance: z.coerce.number().positive().optional(),
   // Food fields
   mealType: z.string().optional(),
   quantity: z.coerce.number().positive().optional(),
-  fuelType: z.string().optional(),
+  foodFuelType: z.string().optional(),
   cookingDuration: z.coerce.number().positive().optional(),
   // Electricity / Household fields
   appliance: z.string().optional(),
@@ -82,11 +84,11 @@ type ActivityFormValues = z.infer<typeof formSchema>;
 const categoryToDescription = (values: ActivityFormValues): string => {
   switch (values.category) {
     case 'travel':
-      return `Travel by ${values.vehicleType} for ${values.distance} km`;
+      return `Travel by ${values.vehicleType} (${values.travelFuelType}) for ${values.distance} km`;
     case 'food':
       let desc = `${values.quantity} ${values.mealType} meal(s)`;
-      if (values.fuelType && values.cookingDuration) {
-        desc += ` cooked for ${values.cookingDuration}h using ${values.fuelType}`;
+      if (values.foodFuelType && values.cookingDuration) {
+        desc += ` cooked for ${values.cookingDuration}h using ${values.foodFuelType}`;
       }
       return desc;
     case 'electricity':
@@ -111,11 +113,12 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
     resolver: zodResolver(formSchema),
     defaultValues: {
       category: 'travel',
+      travelFuelType: '',
       vehicleType: '',
       distance: undefined,
       mealType: '',
       quantity: undefined,
-      fuelType: '',
+      foodFuelType: '',
       cookingDuration: undefined,
       appliance: '',
       hoursUsed: undefined,
@@ -128,6 +131,11 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
   const selectedCategory = useWatch({
     control: form.control,
     name: 'category',
+  });
+
+  const selectedTravelFuelType = useWatch({
+    control: form.control,
+    name: 'travelFuelType',
   });
 
   function onSubmit(values: ActivityFormValues) {
@@ -171,6 +179,43 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
           <>
             <FormField
               control={form.control}
+              name="travelFuelType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Fuel Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a fuel type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="petrol">
+                        <div className="flex items-center gap-2">
+                          <Fuel className="h-4 w-4" /> Petrol
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="diesel">
+                        <div className="flex items-center gap-2">
+                          <Fuel className="h-4 w-4" /> Diesel
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="ev">
+                        <div className="flex items-center gap-2">
+                          <Zap className="h-4 w-4" /> EV
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="vehicleType"
               render={({ field }) => (
                 <FormItem>
@@ -200,16 +245,20 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
                           <Bus className="h-4 w-4" /> Bus
                         </div>
                       </SelectItem>
-                      <SelectItem value="train">
-                        <div className="flex items-center gap-2">
-                          <Train className="h-4 w-4" /> Train
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="flight">
-                        <div className="flex items-center gap-2">
-                          <Plane className="h-4 w-4" /> Flight
-                        </div>
-                      </SelectItem>
+                      {selectedTravelFuelType !== 'ev' && (
+                        <>
+                          <SelectItem value="train">
+                            <div className="flex items-center gap-2">
+                              <Train className="h-4 w-4" /> Train
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="flight">
+                            <div className="flex items-center gap-2">
+                              <Plane className="h-4 w-4" /> Flight
+                            </div>
+                          </SelectItem>
+                        </>
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -296,7 +345,7 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
             />
              <FormField
               control={form.control}
-              name="fuelType"
+              name="foodFuelType"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cooking Fuel</FormLabel>

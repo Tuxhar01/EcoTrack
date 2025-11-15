@@ -1,4 +1,5 @@
 import { AppSidebar } from '@/components/app-sidebar';
+import { AppFooter } from '@/components/footer';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { EmissionsChart } from '@/components/dashboard/emissions-chart';
 import { GamificationPanel } from '@/components/dashboard/gamification-panel';
@@ -9,7 +10,7 @@ export default function AppLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="flex flex-col">
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
           <div className="flex items-center">
             <h1 className="text-2xl font-semibold font-headline md:text-3xl">
@@ -24,6 +25,7 @@ export default function AppLayout() {
             <GamificationPanel />
           </div>
         </main>
+        <AppFooter />
       </SidebarInset>
     </SidebarProvider>
   );

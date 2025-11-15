@@ -32,13 +32,21 @@ export function AuthPopup() {
         title: 'Signed in!',
         description: 'You have successfully signed in with Google.',
       });
-    } catch (error) {
-      console.error("Google sign-in error", error);
-      toast({
-        variant: 'destructive',
-        title: 'Sign-in Failed',
-        description: 'Could not sign in with Google. Please try again.',
-      });
+    } catch (error: any) {
+      if (error.code === 'auth/operation-not-allowed') {
+         toast({
+          variant: 'destructive',
+          title: 'Sign-in Failed',
+          description: 'Google Sign-in is not enabled. Please enable it in your Firebase project settings.',
+        });
+      } else {
+        console.error("Google sign-in error", error);
+        toast({
+          variant: 'destructive',
+          title: 'Sign-in Failed',
+          description: 'Could not sign in with Google. Please try again.',
+        });
+      }
     } finally {
       setIsSigningIn(false);
     }
@@ -52,13 +60,21 @@ export function AuthPopup() {
         title: 'Welcome, Guest!',
         description: 'You are browsing as a guest. Your data will be temporary.',
       });
-    } catch (error) {
-       console.error("Anonymous sign-in error", error);
-       toast({
-        variant: 'destructive',
-        title: 'Sign-in Failed',
-        description: 'Could not sign in as a guest. Please try again.',
-      });
+    } catch (error: any) {
+       if (error.code === 'auth/operation-not-allowed') {
+         toast({
+          variant: 'destructive',
+          title: 'Sign-in Failed',
+          description: 'Guest Sign-in is not enabled. Please enable it in your Firebase project settings.',
+        });
+       } else {
+         console.error("Anonymous sign-in error", error);
+         toast({
+          variant: 'destructive',
+          title: 'Sign-in Failed',
+          description: 'Could not sign in as a guest. Please try again.',
+        });
+       }
     } finally {
       setIsSigningIn(false);
     }
@@ -87,5 +103,3 @@ export function AuthPopup() {
     </Dialog>
   );
 }
-
-    

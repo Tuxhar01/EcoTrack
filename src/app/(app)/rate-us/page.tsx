@@ -80,7 +80,7 @@ export default function RateUsPage() {
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="John Doe"
+                placeholder="Tushar"
               />
             </div>
             <div className="space-y-2">

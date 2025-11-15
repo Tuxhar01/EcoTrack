@@ -12,7 +12,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { mockUserProfile } from '@/lib/data';
 import { Button } from './ui/button';
-import { Footprints, LayoutDashboard, Leaf, MessageSquare, UserCircle, Settings, LifeBuoy, LogOut, Lightbulb } from 'lucide-react';
+import { Footprints, LayoutDashboard, Leaf, MessageSquare, UserCircle, Settings, LifeBuoy, LogOut, Lightbulb, Info } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
@@ -23,6 +23,7 @@ const navItems = [
   { href: '/insights', icon: Lightbulb, label: 'Insights' },
   { href: '/chatbot', icon: MessageSquare, label: 'AI Coach' },
   { href: '/profile', icon: UserCircle, label: 'Profile' },
+  { href: '/about', icon: Info, label: 'About' },
 ];
 
 export function AppSidebar() {

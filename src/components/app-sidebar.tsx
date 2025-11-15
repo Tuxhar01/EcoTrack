@@ -32,10 +32,6 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="flex items-center gap-2">
-          <Leaf className="h-6 w-6 text-primary" />
-          <span className="text-lg font-semibold font-headline group-data-[collapsible=icon]:hidden">
-            EcoTrack
-          </span>
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>

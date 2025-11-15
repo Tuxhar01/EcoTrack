@@ -8,7 +8,7 @@ export const mockUserProfile: UserProfile = {
   name: 'Piyush',
   email: 'piyush@gmail.com',
   joined: new Date('2023-10-01'),
-  avatarUrl: userAvatar?.imageUrl || 'https://picsum.photos/seed/102/100/100',
+  avatarUrl: 'https://picsum.photos/seed/103/100/100',
 };
 
 export const mockActivities: Activity[] = [

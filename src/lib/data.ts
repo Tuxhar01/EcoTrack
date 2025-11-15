@@ -60,7 +60,7 @@ export const faqs = [
 export const mockReviews: Review[] = [
     {
         id: '1',
-        name: 'Alex Johnson',
+        name: 'Dr. Prashant Bhardwaj',
         avatarUrl: 'https://picsum.photos/seed/rev1/100/100',
         rating: 5,
         comment: 'EcoTrack has completely changed the way I think about my daily impact. It\'s easy to use and incredibly insightful. Highly recommend!'

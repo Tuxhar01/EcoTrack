@@ -53,4 +53,6 @@ export const faqs = [
   "What's the most impactful change I can make?",
   "How does my diet affect my carbon footprint?",
   "Is this app free to use?",
+  "How much CO2 is emitted if I drive a petrol car for 20 km?",
+  "What is the carbon footprint of eating non-veg food twice a day for a week?"
 ];

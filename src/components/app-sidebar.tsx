@@ -8,11 +8,9 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarContent,
-  SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { mockUserProfile } from '@/lib/data';
-import { Button } from './ui/button';
 import { Footprints, LayoutDashboard, Leaf, MessageSquare, UserCircle, Settings, LifeBuoy, LogOut, Lightbulb, Info, Home } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -33,16 +31,11 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="shrink-0">
-             <Leaf className="h-6 w-6 text-primary" />
-          </Button>
+      <SidebarHeader className="flex items-center gap-2">
+          <Leaf className="h-6 w-6 text-primary" />
           <span className="text-lg font-semibold font-headline group-data-[collapsible=icon]:hidden">
             EcoTrack
           </span>
-        </div>
-        <SidebarTrigger className="group-data-[collapsible=icon]:hidden" />
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>

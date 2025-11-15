@@ -74,8 +74,8 @@ export const mockReviews: Review[] = [
     },
     {
         id: '3',
-        name: 'Mike Chen',
-        avatarUrl: 'https://picsum.photos/seed/rev3/100/100',
+        name: 'Abhishek Sakhare',
+        avatarUrl: 'https://picsum.photos/seed/Abhishek/100/100',
         rating: 5,
         comment: 'Finally, an app that makes carbon tracking simple and not a chore. The gamification features keep me motivated.'
     }

@@ -21,7 +21,7 @@ import { usePathname } from 'next/navigation';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
 
 const navItems = [
-  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { href: '/', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/activities', icon: Footprints, label: 'Activities' },
   { href: '/chatbot', icon: MessageSquare, label: 'AI Coach' },
   { href: '/profile', icon: UserCircle, label: 'Profile' },
@@ -50,7 +50,7 @@ export function AppSidebar() {
             <SidebarMenuItem key={item.href}>
               <Link href={item.href} legacyBehavior passHref>
                 <SidebarMenuButton
-                  isActive={pathname.startsWith(item.href)}
+                  isActive={pathname === item.href}
                   tooltip={item.label}
                 >
                   <item.icon />

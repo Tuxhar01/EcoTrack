@@ -1,4 +1,6 @@
-import { mockUserProfile } from '@/lib/data';
+'use client';
+
+import { mockUserProfile, mockActivities } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -6,8 +8,44 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
+import { Activity } from '@/lib/types';
 
 export default function ProfilePage() {
+
+  const handleExport = () => {
+    const activitiesToExport = mockActivities;
+    if (!activitiesToExport.length) {
+      alert("No data to export.");
+      return;
+    }
+
+    const headers = ['id', 'date', 'description', 'category', 'co2e'];
+    const csvRows = [
+      headers.join(','), 
+      ...activitiesToExport.map((row: Activity) => {
+        const values = [
+          row.id,
+          format(row.date, 'yyyy-MM-dd'),
+          `"${row.description.replace(/"/g, '""')}"`, 
+          row.category,
+          row.co2e.toFixed(2),
+        ];
+        return values.join(',');
+      })
+    ];
+    
+    const csvString = csvRows.join('\n');
+    const blob = new Blob([csvString], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ecotrack-data.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
       <div className="flex items-center">
@@ -52,7 +90,7 @@ export default function ProfilePage() {
                      <div>
                         <h3 className="text-lg font-medium">Data Export</h3>
                         <p className="text-sm text-muted-foreground mb-4">Download a copy of your emissions data.</p>
-                        <Button variant="secondary">Export My Data (CSV)</Button>
+                        <Button variant="secondary" onClick={handleExport}>Export My Data (CSV)</Button>
                     </div>
                 </CardContent>
             </Card>

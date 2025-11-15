@@ -150,7 +150,7 @@ export default function ChatbotPage() {
             </CardContent>
           </Card>
         </div>
-        <div className="hidden lg:block">
+        <div className="lg:col-span-1">
             <Card className="shadow-lg">
                 <CardHeader>
                     <CardTitle>Frequently Asked Questions</CardTitle>
@@ -158,7 +158,12 @@ export default function ChatbotPage() {
                 <CardContent>
                     <div className="space-y-2">
                         {faqs.map((faq, index) => (
-                            <Button key={index} variant="ghost" className="w-full justify-start text-left h-auto" onClick={() => handleFaqClick(faq)}>
+                            <Button
+                                key={index}
+                                variant="ghost"
+                                className="w-full justify-start text-left h-auto whitespace-normal"
+                                onClick={() => handleFaqClick(faq)}
+                            >
                                 {faq}
                             </Button>
                         ))}

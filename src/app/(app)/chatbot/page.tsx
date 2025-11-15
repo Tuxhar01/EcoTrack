@@ -150,7 +150,7 @@ export default function ChatbotPage() {
             </CardContent>
           </Card>
         </div>
-        <div className="lg:block">
+        <div className="hidden lg:block">
             <Card className="shadow-lg">
                 <CardHeader>
                     <CardTitle>Frequently Asked Questions</CardTitle>

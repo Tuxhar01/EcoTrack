@@ -8,7 +8,6 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarContent,
-  SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { mockUserProfile } from '@/lib/data';
@@ -39,8 +38,6 @@ export function AppSidebar() {
           <span className="text-lg font-semibold font-headline group-data-[collapsible=icon]:hidden">
             EcoTrack
           </span>
-          <div className="flex-1" />
-          <SidebarTrigger className="group-data-[collapsible=icon]:hidden" />
         </div>
       </SidebarHeader>
       <SidebarContent>

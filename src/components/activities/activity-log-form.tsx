@@ -41,13 +41,13 @@ import {
   Train,
   Bike,
   Plane,
-  CookingPot,
   Beef,
   Vegan,
   GlassWater,
   ShoppingBag,
 } from 'lucide-react';
 import { useState } from 'react';
+import { Activity } from '@/lib/types';
 
 const formSchema = z.object({
   category: z.enum([
@@ -56,6 +56,7 @@ const formSchema = z.object({
     'food',
     'household',
     'waste',
+    'shopping'
   ]),
   // Travel fields
   vehicleType: z.string().optional(),
@@ -69,11 +70,33 @@ const formSchema = z.object({
   // Waste fields
   wasteGenerated: z.coerce.number().positive().optional(),
   wasteRecycled: z.coerce.number().nonnegative().optional(),
+  // Shopping
+  shoppingDescription: z.string().optional(),
 });
 
 type ActivityFormValues = z.infer<typeof formSchema>;
 
-export function ActivityLogForm() {
+const categoryToDescription = (values: ActivityFormValues): string => {
+  switch (values.category) {
+    case 'travel':
+      return `Travel by ${values.vehicleType} for ${values.distance} km`;
+    case 'food':
+      return `${values.quantity} ${values.mealType} meal(s)`;
+    case 'electricity':
+      return `Used electricity for ${values.hoursUsed} kWh`;
+    case 'household':
+        return `Used ${values.appliance} for ${values.hoursUsed} hours`;
+    case 'waste':
+        return `Generated ${values.wasteGenerated}kg of waste, recycled ${values.wasteRecycled}kg`;
+    case 'shopping':
+        return values.shoppingDescription || 'Shopping';
+    default:
+      return 'Logged an activity';
+  }
+}
+
+
+export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: Omit<Activity, 'id' | 'date' | 'co2e'>) => void }) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
@@ -88,7 +111,8 @@ export function ActivityLogForm() {
       appliance: '',
       hoursUsed: undefined,
       wasteGenerated: undefined,
-      wasteRecycled: undefined,
+      wasteRecycled: 0,
+      shoppingDescription: '',
     },
   });
 
@@ -98,12 +122,17 @@ export function ActivityLogForm() {
   });
 
   function onSubmit(values: ActivityFormValues) {
-    console.log(values);
-    // TODO: Implement backend logic
+    const description = categoryToDescription(values);
     const carbonValue = Math.random() * 5; // Placeholder
+    
+    onActivityLog({
+      category: values.category,
+      description,
+    });
+
     toast({
       title: 'Activity Logged!',
-      description: `Your activity has been successfully recorded with a footprint of ${carbonValue.toFixed(2)} kg CO₂e.`,
+      description: `Your activity has been recorded with a footprint of ${carbonValue.toFixed(2)} kg CO₂e.`,
     });
     setOpen(false);
     form.reset();
@@ -121,7 +150,7 @@ export function ActivityLogForm() {
                 <FormItem>
                   <FormLabel>Hourly Usage (kWh)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 2.5" {...field} />
+                    <Input type="number" placeholder="e.g., 2.5" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : +e.target.value)} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -186,7 +215,7 @@ export function ActivityLogForm() {
                 <FormItem>
                   <FormLabel>Distance (km)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 50" {...field} />
+                    <Input type="number" placeholder="e.g., 50" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : +e.target.value)} value={field.value ?? ''}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -251,7 +280,7 @@ export function ActivityLogForm() {
                 <FormItem>
                   <FormLabel>Quantity (meals)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 1" {...field} />
+                    <Input type="number" placeholder="e.g., 1" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : +e.target.value)} value={field.value ?? ''}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -295,7 +324,7 @@ export function ActivityLogForm() {
                 <FormItem>
                   <FormLabel>Hours of Usage</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 3" {...field} />
+                    <Input type="number" placeholder="e.g., 3" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : +e.target.value)} value={field.value ?? ''}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -313,7 +342,7 @@ export function ActivityLogForm() {
                 <FormItem>
                   <FormLabel>Waste Generated (kg)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 1.5" {...field} />
+                    <Input type="number" placeholder="e.g., 1.5" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : +e.target.value)} value={field.value ?? ''}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -326,7 +355,25 @@ export function ActivityLogForm() {
                 <FormItem>
                   <FormLabel>Waste Recycled (kg)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 0.5" {...field} />
+                    <Input type="number" placeholder="e.g., 0.5" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : +e.target.value)} value={field.value ?? ''}/>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        );
+        case 'shopping':
+        return (
+          <>
+            <FormField
+              control={form.control}
+              name="shoppingDescription"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., New clothes" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -344,7 +391,7 @@ export function ActivityLogForm() {
       <SheetTrigger asChild>
         <Button>Log New Activity</Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="overflow-y-auto">
         <SheetHeader>
           <SheetTitle>Log a New Activity</SheetTitle>
           <SheetDescription>
@@ -397,6 +444,11 @@ export function ActivityLogForm() {
                           <Trash2 className="h-4 w-4" /> Waste & Recycling
                         </div>
                       </SelectItem>
+                       <SelectItem value="shopping">
+                        <div className="flex items-center gap-2">
+                          <ShoppingBag className="h-4 w-4" /> Shopping
+                        </div>
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -406,7 +458,7 @@ export function ActivityLogForm() {
 
             {renderCategoryFields()}
 
-            <SheetFooter>
+            <SheetFooter className="pt-4">
               <SheetClose asChild>
                 <Button variant="outline">Cancel</Button>
               </SheetClose>

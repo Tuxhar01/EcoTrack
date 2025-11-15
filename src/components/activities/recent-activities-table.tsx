@@ -9,12 +9,11 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { mockActivities } from '@/lib/data';
-import { EmissionCategory } from '@/lib/types';
+import { EmissionCategory, Activity } from '@/lib/types';
 import { Car, Zap, Leaf, ShoppingBag, Home, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 
-const categoryMap: { [key in EmissionCategory]?: { icon: React.ElementType, label: string } } = {
+const categoryMap: { [key in EmissionCategory]: { icon: React.ElementType, label: string } } = {
   travel: { icon: Car, label: 'Travel' },
   electricity: { icon: Zap, label: 'Electricity' },
   food: { icon: Leaf, label: 'Food' },
@@ -23,8 +22,8 @@ const categoryMap: { [key in EmissionCategory]?: { icon: React.ElementType, labe
   shopping: { icon: ShoppingBag, label: 'Shopping' },
 };
 
-export function RecentActivitiesTable() {
-  const sortedActivities = [...mockActivities].sort((a, b) => b.date.getTime() - a.date.getTime());
+export function RecentActivitiesTable({ activities }: { activities: Activity[] }) {
+  const sortedActivities = [...activities].sort((a, b) => b.date.getTime() - a.date.getTime());
 
   return (
     <Table>

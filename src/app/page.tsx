@@ -27,7 +27,7 @@ import { mockReviews } from '@/lib/data';
 import { Review } from '@/lib/types';
 import Autoplay from 'embla-carousel-autoplay';
 import { AppSidebar } from '@/components/app-sidebar';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 
 const mottos = [
   'Small steps, big impact.',
@@ -69,8 +69,8 @@ export default function HomePage() {
 
   return (
     <SidebarProvider>
-      <div className="flex flex-col min-h-screen bg-background">
         <AppSidebar />
+        <SidebarInset className="flex flex-col min-h-screen">
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container flex h-14 items-center">
             <div className="mr-4 flex items-center">
@@ -249,7 +249,7 @@ export default function HomePage() {
               </p>
             </div>
           </footer>
-      </div>
+      </SidebarInset>
     </SidebarProvider>
   );
 }

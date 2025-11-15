@@ -69,7 +69,7 @@ export const mockReviews: Review[] = [
         id: '2',
         name: 'Dr. Paramvir Singh',
         avatarUrl: 'https://picsum.photos/seed/rev2/100/100',
-        rating: 3,
+        rating: 4,
         comment: 'A great app for anyone looking to be more environmentally conscious. The AI coach gives practical tips that are easy to follow.'
     },
     {

@@ -10,7 +10,7 @@ import { mockUserProfile, faqs } from '@/lib/data';
 import type { ChatMessage } from '@/lib/types';
 import { handleChatSubmit } from '@/lib/actions';
 import { cn } from '@/lib/utils';
-import { Leaf, User, Send, Loader2, Bot } from 'lucide-react';
+import { Leaf, Send, Loader2, Bot } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function ChatbotPage() {
@@ -109,8 +109,8 @@ export default function ChatbotPage() {
                       </div>
                        {message.role === 'user' && (
                         <Avatar className="h-8 w-8">
-                           <AvatarImage src={mockUserProfile.avatarUrl} />
-                           <AvatarFallback><User /></AvatarFallback>
+                           <AvatarImage src={mockUserProfile.avatarUrl} alt={mockUserProfile.name} />
+                           <AvatarFallback>P</AvatarFallback>
                         </Avatar>
                       )}
                     </div>

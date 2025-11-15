@@ -33,7 +33,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="flex items-center gap-2">
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="pt-8">
         <SidebarMenu>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.href}>

@@ -1,4 +1,3 @@
-import { ActionSuggestions } from '@/components/dashboard/action-suggestions';
 import { EmissionsChart } from '@/components/dashboard/emissions-chart';
 import { GamificationPanel } from '@/components/dashboard/gamification-panel';
 import { StatsCards } from '@/components/dashboard/stats-cards';
@@ -17,10 +16,7 @@ export default function DashboardPage() {
         <div className="xl:col-span-2">
           <EmissionsChart />
         </div>
-        <div className="grid gap-4">
-          <ActionSuggestions />
-          <GamificationPanel />
-        </div>
+        <GamificationPanel />
       </div>
     </main>
   );

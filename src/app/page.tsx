@@ -1,6 +1,5 @@
 import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
-import { ActionSuggestions } from '@/components/dashboard/action-suggestions';
 import { EmissionsChart } from '@/components/dashboard/emissions-chart';
 import { GamificationPanel } from '@/components/dashboard/gamification-panel';
 import { StatsCards } from '@/components/dashboard/stats-cards';
@@ -22,10 +21,7 @@ export default function AppLayout() {
             <div className="xl:col-span-2">
               <EmissionsChart />
             </div>
-            <div className="grid gap-4">
-              <ActionSuggestions />
-              <GamificationPanel />
-            </div>
+            <GamificationPanel />
           </div>
         </main>
       </SidebarInset>

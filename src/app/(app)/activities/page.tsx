@@ -14,7 +14,7 @@ export default function ActivitiesPage() {
   const handleAddActivity = (newActivity: Omit<Activity, 'id' | 'date' | 'co2e'>) => {
     const activityWithMetadata: Activity = {
       ...newActivity,
-      id: (activities.length + 1).toString(),
+      id: Date.now().toString(),
       date: new Date(),
       co2e: Math.random() * 5, // Placeholder for real calculation
     };

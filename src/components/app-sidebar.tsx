@@ -49,7 +49,7 @@ export function AppSidebar() {
             <SidebarMenuItem key={item.href}>
               <Link href={item.href}>
                 <SidebarMenuButton
-                  isActive={pathname === item.href}
+                  isActive={pathname === item.href || (pathname === '/' && item.href === '/dashboard')}
                   tooltip={item.label}
                 >
                   <item.icon />

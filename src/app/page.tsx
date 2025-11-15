@@ -1,6 +1,6 @@
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppFooter } from '@/components/footer';
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { EmissionsChart } from '@/components/dashboard/emissions-chart';
 import { GamificationPanel } from '@/components/dashboard/gamification-panel';
 import { StatsCards } from '@/components/dashboard/stats-cards';
@@ -11,6 +11,10 @@ export default function AppLayout() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset className="flex flex-col">
+         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+            <SidebarTrigger className="md:hidden" />
+            <div className="w-full flex-1" />
+          </header>
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
           <div className="flex items-center">
             <h1 className="text-2xl font-semibold font-headline md:text-3xl">

@@ -78,29 +78,112 @@ const formSchema = z.object({
 
 type ActivityFormValues = z.infer<typeof formSchema>;
 
-const categoryToDescription = (values: ActivityFormValues): string => {
+// Emission factors (kg CO2e per unit)
+const emissionFactors = {
+  electricity: 0.82, // kg CO2e per kWh
+  travel: {
+    petrol: { car: 0.192, bike: 0.113 },
+    diesel: { car: 0.171, bus: 0.027 },
+    ev: { car: 0.05, bike: 0.01, bus: 0.015 },
+    train: 0.041, // generic train
+    flight: 0.255, // domestic flight
+  },
+  food: {
+    'non-veg': 7.19, // kg CO2e per meal
+    'dairy-heavy': 2.5,
+    veg: 2.0,
+    vegan: 1.5,
+    processed: 4.0,
+    cooking: {
+      cng: 0.18, // per hour
+      lpg: 0.22, // per hour
+      electricity: 0.82 // per kWh, assuming 1 hour uses 1 kWh
+    }
+  },
+  household: {
+    ac: 1.5, // kg CO2e per hour
+    'washing-machine': 0.6,
+    cooler: 0.2,
+    heater: 2.0,
+  },
+  waste: {
+    generated: 0.5, // kg CO2e per kg
+    recycled: -0.3, // negative emission for recycling
+  },
+};
+
+
+const categoryToDescriptionAndCo2e = (values: ActivityFormValues): { description: string; co2e: number } => {
+  let description = '';
+  let co2e = 0;
+
   switch (values.category) {
-    case 'travel':
-      return `Travel by ${values.vehicleType} (${values.travelFuelType}) for ${values.distance} km`;
-    case 'food':
-      let desc = `${values.quantity} ${values.mealType} meal(s)`;
-      if (values.foodFuelType && values.cookingDuration) {
-        desc += ` cooked for ${values.cookingDuration}h using ${values.foodFuelType}`;
+    case 'travel': {
+      const distance = values.distance || 0;
+      const fuel = values.travelFuelType as keyof typeof emissionFactors.travel | undefined;
+      const vehicle = values.vehicleType as keyof typeof emissionFactors.travel.petrol | undefined;
+      description = `Travel by ${values.vehicleType} for ${distance} km`;
+
+      if (fuel && vehicle) {
+         if (fuel === 'train' || fuel === 'flight') {
+           co2e = distance * emissionFactors.travel[fuel];
+         } else if (fuel === 'petrol' || fuel === 'diesel' || fuel === 'ev') {
+            const vehicleFactors = emissionFactors.travel[fuel];
+            if (vehicle in vehicleFactors) {
+                co2e = distance * (vehicleFactors as any)[vehicle];
+            }
+         }
       }
-      return desc;
-    case 'electricity':
-      return `Used electricity for ${values.hoursUsed} kWh`;
-    case 'household':
-        return `Used ${values.appliance} for ${values.hoursUsed} hours`;
-    case 'waste':
-        return `Generated ${values.wasteGenerated}kg of waste, recycled ${values.wasteRecycled}kg`;
+      break;
+    }
+    case 'food': {
+      const meal = values.mealType as keyof typeof emissionFactors.food | undefined;
+      const quantity = values.quantity || 0;
+      const cookingFuel = values.foodFuelType as keyof typeof emissionFactors.food.cooking | undefined;
+      const cookingHours = values.cookingDuration || 0;
+      description = `${quantity} ${values.mealType} meal(s)`;
+
+      if (meal && meal in emissionFactors.food) {
+        co2e += quantity * (emissionFactors.food as any)[meal];
+      }
+      if (cookingFuel && cookingHours > 0) {
+        description += ` cooked for ${cookingHours}h using ${cookingFuel}`;
+        co2e += cookingHours * emissionFactors.food.cooking[cookingFuel];
+      }
+      break;
+    }
+    case 'electricity': {
+      const usage = values.hoursUsed || 0;
+      description = `Used electricity for ${usage} kWh`;
+      co2e = usage * emissionFactors.electricity;
+      break;
+    }
+    case 'household': {
+      const appliance = values.appliance as keyof typeof emissionFactors.household | undefined;
+      const hours = values.hoursUsed || 0;
+      description = `Used ${values.appliance} for ${hours} hours`;
+      if (appliance && appliance in emissionFactors.household) {
+        co2e = hours * emissionFactors.household[appliance];
+      }
+      break;
+    }
+    case 'waste': {
+      const generated = values.wasteGenerated || 0;
+      const recycled = values.wasteRecycled || 0;
+      description = `Generated ${generated}kg of waste, recycled ${recycled}kg`;
+      co2e = (generated * emissionFactors.waste.generated) + (recycled * emissionFactors.waste.recycled);
+      break;
+    }
     default:
-      return 'Logged an activity';
+      description = 'Logged an activity';
+      co2e = 0;
   }
-}
+
+  return { description, co2e };
+};
 
 
-export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: Omit<Activity, 'id' | 'date' | 'co2e'>) => void }) {
+export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: Omit<Activity, 'id' | 'date'>) => void }) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
@@ -133,16 +216,17 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
   });
 
   function onSubmit(values: ActivityFormValues) {
-    const description = categoryToDescription(values);
+    const { description, co2e } = categoryToDescriptionAndCo2e(values);
     
     onActivityLog({
       category: values.category,
       description,
+      co2e,
     });
 
     toast({
       title: 'Activity Logged!',
-      description: `Your activity has been recorded.`,
+      description: `Your activity has been recorded. CO₂e: ${co2e.toFixed(2)} kg`,
     });
     setOpen(false);
     form.reset();
@@ -202,6 +286,16 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
                           <Zap className="h-4 w-4" /> EV
                         </div>
                       </SelectItem>
+                       <SelectItem value="train">
+                        <div className="flex items-center gap-2">
+                          <Train className="h-4 w-4" /> Train
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="flight">
+                        <div className="flex items-center gap-2">
+                          <Plane className="h-4 w-4" /> Flight
+                        </div>
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -217,6 +311,7 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    disabled={selectedTravelFuelType === 'train' || selectedTravelFuelType === 'flight'}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -239,20 +334,7 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
                           <Bus className="h-4 w-4" /> Bus
                         </div>
                       </SelectItem>
-                      {selectedTravelFuelType !== 'ev' && (
-                        <>
-                          <SelectItem value="train">
-                            <div className="flex items-center gap-2">
-                              <Train className="h-4 w-4" /> Train
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="flight">
-                            <div className="flex items-center gap-2">
-                              <Plane className="h-4 w-4" /> Flight
-                            </div>
-                          </SelectItem>
-                        </>
-                      )}
+                      
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -548,3 +630,5 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
     </Sheet>
   );
 }
+
+    

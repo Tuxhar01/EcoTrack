@@ -11,12 +11,11 @@ import type { Activity } from '@/lib/types';
 export default function ActivitiesPage() {
   const [activities, setActivities] = useState<Activity[]>(mockActivities);
 
-  const handleAddActivity = (newActivity: Omit<Activity, 'id' | 'date' | 'co2e'>) => {
+  const handleAddActivity = (newActivity: Omit<Activity, 'id' | 'date'>) => {
     const activityWithMetadata: Activity = {
       ...newActivity,
       id: Date.now().toString(),
       date: new Date(),
-      co2e: Math.random() * 5, // Placeholder for real calculation
     };
     setActivities(prevActivities => [activityWithMetadata, ...prevActivities]);
   };
@@ -44,3 +43,5 @@ export default function ActivitiesPage() {
     </main>
   );
 }
+
+    

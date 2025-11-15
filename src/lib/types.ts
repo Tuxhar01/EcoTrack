@@ -33,6 +33,11 @@ export interface UserProfile {
   email: string;
   joined: Date;
   avatarUrl: string;
+  phone?: string;
+  address1?: string;
+  address2?: string;
+  city?: string;
+  country?: string;
 }
 
 export interface ChatMessage {

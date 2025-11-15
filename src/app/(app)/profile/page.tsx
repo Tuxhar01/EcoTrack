@@ -76,13 +76,37 @@ export default function ProfilePage() {
                 </CardHeader>
                 <CardContent>
                     <form className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="fullName">Full Name</Label>
-                            <Input id="fullName" defaultValue={mockUserProfile.name} />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="fullName">Full Name</Label>
+                                <Input id="fullName" defaultValue={mockUserProfile.name} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="email">Email</Label>
+                                <Input id="email" type="email" defaultValue={mockUserProfile.email} />
+                            </div>
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="phone">Phone Number</Label>
+                            <Input id="phone" type="tel" defaultValue={mockUserProfile.phone} />
                         </div>
                         <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" defaultValue={mockUserProfile.email} />
+                            <Label htmlFor="address1">Address Line 1</Label>
+                            <Input id="address1" defaultValue={mockUserProfile.address1} />
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="address2">Address Line 2</Label>
+                            <Input id="address2" defaultValue={mockUserProfile.address2} />
+                        </div>
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="city">City</Label>
+                                <Input id="city" defaultValue={mockUserProfile.city} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="country">Country</Label>
+                                <Input id="country" defaultValue={mockUserProfile.country} />
+                            </div>
                         </div>
                         <Button>Save Changes</Button>
                     </form>

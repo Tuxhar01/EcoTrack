@@ -9,6 +9,11 @@ export const mockUserProfile: UserProfile = {
   email: 'piyush@gmail.com',
   joined: new Date('2023-10-01'),
   avatarUrl: 'https://picsum.photos/seed/103/100/100',
+  phone: '123-456-7890',
+  address1: '123 Sustainability Lane',
+  address2: 'Apt 4B',
+  city: 'Greenville',
+  country: 'USA',
 };
 
 export const mockActivities: Activity[] = [

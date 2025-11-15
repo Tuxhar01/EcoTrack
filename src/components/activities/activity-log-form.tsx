@@ -81,6 +81,14 @@ export function ActivityLogForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       category: 'travel',
+      vehicleType: '',
+      distance: undefined,
+      mealType: '',
+      quantity: undefined,
+      appliance: '',
+      hoursUsed: undefined,
+      wasteGenerated: undefined,
+      wasteRecycled: undefined,
     },
   });
 

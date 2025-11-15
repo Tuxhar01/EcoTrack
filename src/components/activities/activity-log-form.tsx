@@ -34,7 +34,6 @@ import { z } from 'zod';
 import {
   Zap,
   Car,
-  Leaf,
   Home,
   Trash2,
   Bus,
@@ -46,7 +45,8 @@ import {
   GlassWater,
   ShoppingBag,
   Flame,
-  Fuel
+  Fuel,
+  Utensils
 } from 'lucide-react';
 import { useState } from 'react';
 import { Activity } from '@/lib/types';
@@ -377,7 +377,7 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
                     <SelectContent>
                       <SelectItem value="veg">
                         <div className="flex items-center gap-2">
-                          <Leaf className="h-4 w-4" /> Vegetarian
+                          <Utensils className="h-4 w-4" /> Vegetarian
                         </div>
                       </SelectItem>
                       <SelectItem value="non-veg">
@@ -596,7 +596,7 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
                       </SelectItem>
                       <SelectItem value="food">
                         <div className="flex items-center gap-2">
-                          <Leaf className="h-4 w-4" /> Food
+                          <Utensils className="h-4 w-4" /> Food
                         </div>
                       </SelectItem>
                       <SelectItem value="household">
@@ -630,5 +630,3 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
     </Sheet>
   );
 }
-
-    

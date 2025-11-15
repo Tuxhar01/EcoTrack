@@ -1,6 +1,6 @@
 import type { UserProfile, Activity, EmissionDataPoint, Badge } from './types';
 import { PlaceHolderImages } from './placeholder-images';
-import { Car, Zap, Flame, Award, Leaf, Trophy } from 'lucide-react';
+import { Car, Zap, Flame, Award, Utensils, Trophy } from 'lucide-react';
 
 const userAvatar = PlaceHolderImages.find(image => image.id === 'user-avatar-1');
 
@@ -33,7 +33,7 @@ export const mockChartData: EmissionDataPoint[] = [
 ];
 
 export const mockBadges: Badge[] = [
-  { id: '1', name: 'Eco Starter', description: 'Logged your first activity.', icon: Leaf, unlocked: true },
+  { id: '1', name: 'Eco Starter', description: 'Logged your first activity.', icon: Utensils, unlocked: true },
   { id: '2', name: 'Green Commuter', description: 'Used a green transport option 5 times.', icon: Car, unlocked: true },
   { id: '3', name: 'Energy Saver', description: 'Kept energy usage below 5kg CO2e for a week.', icon: Zap, unlocked: true },
   { id: '4', name: 'Activity Streak', description: 'Logged an activity for 7 days in a row.', icon: Flame, unlocked: false },

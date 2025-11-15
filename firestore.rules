@@ -1,0 +1,174 @@
+/**
+ * @fileoverview Firestore Security Rules for EcoTrack application.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model for personal data,
+ * while allowing public read access to emission factors. User data is
+ * organized under the `/users/{userId}` path, ensuring that only the
+ * authenticated user can access their own data.
+ *
+ * Data Structure:
+ * - /users/{userId}: Stores user profiles, accessible only to the user.
+ * - /users/{userId}/activities/{activityId}: Stores user activities, accessible only to the user.
+ * - /emissionFactors/{emissionFactorId}: Stores public emission factor data, accessible to all users.
+ * - /users/{userId}/dailyAggregates/{dailyAggregateId}: Stores daily aggregate data, accessible only to the user.
+ * - /users/{userId}/gamificationState: Stores user's gamification state, accessible only to the user.
+ * - /users/{userId}/recommendations/{recommendationId}: Stores personalized recommendations, accessible only to the user.
+ *
+ * Key Security Decisions:
+ * - User listing is disallowed.
+ * - Emission factors are publicly readable.
+ * - Default security posture for ambiguous relationships is strict owner-only access.
+ *
+ * Denormalization for Authorization:
+ *  - User-specific data (activities, aggregates, recommendations) is stored under the user's path
+ *    to avoid the need for `get()` calls to verify ownership.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Rule for the root of the database. Does not grant any access.
+     * @path /
+     * @allow (get): Never. Root access is not granted.
+     * @deny (get): Always. Accessing the root should always be denied.
+     * @principle Root access should be explicitly denied.
+     */
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Manages user profile data. Only the authenticated user can read/write their own profile.
+     * @path /users/{userId}
+     * @allow (create): Authenticated user creates their own profile.
+     * @allow (get): Authenticated user reads their own profile.
+     * @allow (update): Authenticated user updates their own profile.
+     * @allow (delete): Authenticated user deletes their own profile.
+     * @deny (create): User attempts to create a profile for another user.
+     * @deny (get): User attempts to read another user's profile.
+     * @deny (update): User attempts to update another user's profile.
+     * @deny (delete): User attempts to delete another user's profile.
+     * @principle Enforces document ownership for all operations.
+     */
+    match /users/{userId} {
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Manages user activity data. Only the authenticated user can read/write their own activities.
+     * @path /users/{userId}/activities/{activityId}
+     * @allow (create): Authenticated user creates an activity for themselves.
+     * @allow (get): Authenticated user reads their own activity.
+     * @allow (update): Authenticated user updates their own activity.
+     * @allow (delete): Authenticated user deletes their own activity.
+     * @deny (create): User attempts to create an activity for another user.
+     * @deny (get): User attempts to read another user's activity.
+     * @deny (update): User attempts to update another user's activity.
+     * @deny (delete): User attempts to delete another user's activity.
+     * @principle Enforces document ownership for all operations.
+     */
+    match /users/{userId}/activities/{activityId} {
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Manages public emission factor data. Anyone can read, but writes are disallowed.
+     * @path /emissionFactors/{emissionFactorId}
+     * @allow (get): Anyone can read emission factors.
+     * @allow (list): Anyone can list emission factors.
+     * @deny (create): No one can create emission factors through the client.
+     * @deny (update): No one can update emission factors through the client.
+     * @deny (delete): No one can delete emission factors through the client.
+     * @principle Public read access with no write access.
+     */
+    match /emissionFactors/{emissionFactorId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Manages user's daily aggregate data. Only the authenticated user can read/write their own aggregates.
+     * @path /users/{userId}/dailyAggregates/{dailyAggregateId}
+     * @allow (create): Authenticated user creates aggregate data for themselves.
+     * @allow (get): Authenticated user reads their own aggregate data.
+     * @allow (update): Authenticated user updates their own aggregate data.
+     * @allow (delete): Authenticated user deletes their own aggregate data.
+     * @deny (create): User attempts to create aggregate data for another user.
+     * @deny (get): User attempts to read another user's aggregate data.
+     * @deny (update): User attempts to update another user's aggregate data.
+     * @deny (delete): User attempts to delete another user's aggregate data.
+     * @principle Enforces document ownership for all operations.
+     */
+    match /users/{userId}/dailyAggregates/{dailyAggregateId} {
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Manages the user's gamification state. Only the authenticated user can read/write their own state.
+     * @path /users/{userId}/gamificationState
+     * @allow (create): Authenticated user creates their gamification state.
+     * @allow (get): Authenticated user reads their own gamification state.
+     * @allow (update): Authenticated user updates their own gamification state.
+     * @allow (delete): Authenticated user deletes their gamification state.
+     * @deny (create): User attempts to create a gamification state for another user.
+     * @deny (get): User attempts to read another user's gamification state.
+     * @deny (update): User attempts to update another user's gamification state.
+     * @deny (delete): User attempts to delete another user's gamification state.
+     * @principle Enforces document ownership for all operations.
+     */
+    match /users/{userId}/gamificationState {
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Manages user's recommendations. Only the authenticated user can read/write their own recommendations.
+     * @path /users/{userId}/recommendations/{recommendationId}
+     * @allow (create): Authenticated user creates a recommendation for themselves.
+     * @allow (get): Authenticated user reads their own recommendation.
+     * @allow (update): Authenticated user updates their own recommendation.
+     * @allow (delete): Authenticated user deletes their own recommendation.
+     * @deny (create): User attempts to create a recommendation for another user.
+     * @deny (get): User attempts to read another user's recommendation.
+     * @deny (update): User attempts to update another user's recommendation.
+     * @deny (delete): User attempts to delete another user's recommendation.
+     * @principle Enforces document ownership for all operations.
+     */
+    match /users/{userId}/recommendations/{recommendationId} {
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+  }
+}

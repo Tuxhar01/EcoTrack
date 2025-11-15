@@ -9,13 +9,11 @@ import {
   SidebarFooter,
   SidebarContent,
   SidebarTrigger,
-  SidebarGroup,
-  SidebarGroupLabel,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { mockUserProfile } from '@/lib/data';
 import { Button } from './ui/button';
-import { Bell, Footprints, LayoutDashboard, Leaf, MessageSquare, UserCircle, Settings, LifeBuoy, LogOut } from 'lucide-react';
+import { Footprints, LayoutDashboard, Leaf, MessageSquare, UserCircle, Settings, LifeBuoy, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
@@ -48,8 +46,9 @@ export function AppSidebar() {
         <SidebarMenu>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.href}>
-              <Link href={item.href} legacyBehavior passHref>
+              <Link href={item.href} passHref>
                 <SidebarMenuButton
+                  as="a"
                   isActive={pathname === item.href}
                   tooltip={item.label}
                 >

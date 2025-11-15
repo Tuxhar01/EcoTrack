@@ -59,7 +59,7 @@ export default function ProfilePage() {
                 <CardContent className="pt-6 flex flex-col items-center text-center">
                     <Avatar className="h-24 w-24 mb-4">
                         <AvatarImage src={mockUserProfile.avatarUrl} alt={mockUserProfile.name} />
-                        <AvatarFallback>{mockUserProfile.name.charAt(0)}</AvatarFallback>
+                        <AvatarFallback>P</AvatarFallback>
                     </Avatar>
                     <h2 className="text-xl font-semibold">{mockUserProfile.name}</h2>
                     <p className="text-sm text-muted-foreground">{mockUserProfile.email}</p>

@@ -66,7 +66,7 @@ export function AppSidebar() {
                  <div className="flex w-full cursor-pointer items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50">
                     <Avatar className="h-8 w-8">
                         <AvatarImage src={mockUserProfile.avatarUrl} alt={mockUserProfile.name} />
-                        <AvatarFallback>{mockUserProfile.name.charAt(0)}</AvatarFallback>
+                        <AvatarFallback>P</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col truncate group-data-[collapsible=icon]:hidden">
                         <span className="font-medium">{mockUserProfile.name}</span>

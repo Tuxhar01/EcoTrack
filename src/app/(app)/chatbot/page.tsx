@@ -71,7 +71,7 @@ export default function ChatbotPage() {
   };
 
   return (
-    <main className="flex flex-1 flex-col p-4 md:p-8 h-[calc(100vh-4rem)]">
+    <main className="flex flex-1 flex-col p-4 md:p-8 h-auto md:h-[calc(100vh-4rem)]">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
         <div className="lg:col-span-2 flex flex-col h-full">
           <Card className="flex-1 flex flex-col shadow-lg">
@@ -81,7 +81,7 @@ export default function ChatbotPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="flex-1 p-0 flex flex-col">
-              <ScrollArea className="flex-1 p-6" ref={scrollAreaRef}>
+              <ScrollArea className="flex-1 p-6 h-96 md:h-auto" ref={scrollAreaRef}>
                 <div className="space-y-4">
                   {messages.length === 0 && (
                     <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
@@ -150,7 +150,7 @@ export default function ChatbotPage() {
             </CardContent>
           </Card>
         </div>
-        <div className="hidden lg:block">
+        <div className="lg:block">
             <Card className="shadow-lg">
                 <CardHeader>
                     <CardTitle>Frequently Asked Questions</CardTitle>

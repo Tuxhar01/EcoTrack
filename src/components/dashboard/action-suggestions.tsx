@@ -31,7 +31,6 @@ export function ActionSuggestions() {
         transportEmissions: thisWeekData.transport,
         energyEmissions: thisWeekData.energy,
         foodEmissions: thisWeekData.food,
-        shoppingEmissions: thisWeekData.shopping,
         recentActivities: recentActivitiesSummary,
       };
 

@@ -27,10 +27,6 @@ const chartConfig = {
     label: 'Food',
     color: 'hsl(var(--chart-3))',
   },
-  shopping: {
-    label: 'Shopping',
-    color: 'hsl(var(--chart-4))',
-  },
 };
 
 export function EmissionsChart() {
@@ -56,7 +52,6 @@ export function EmissionsChart() {
             <Bar dataKey="transport" fill="var(--color-transport)" radius={4} />
             <Bar dataKey="energy" fill="var(--color-energy)" radius={4} />
             <Bar dataKey="food" fill="var(--color-food)" radius={4} />
-            <Bar dataKey="shopping" fill="var(--color-shopping)" radius={4} />
           </BarChart>
         </ChartContainer>
       </CardContent>

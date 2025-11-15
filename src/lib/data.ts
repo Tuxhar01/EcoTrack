@@ -12,12 +12,11 @@ export const mockUserProfile: UserProfile = {
 };
 
 export const mockActivities: Activity[] = [
-  { id: '1', date: new Date('2024-07-20'), description: 'Morning commute', category: 'transport', co2e: 2.5 },
+  { id: '1', date: new Date('2024-07-20'), description: 'Morning commute', category: 'travel', co2e: 2.5 },
   { id: '2', date: new Date('2024-07-20'), description: 'Lunch (Chicken Salad)', category: 'food', co2e: 1.2 },
-  { id: '3', date: new Date('2024-07-20'), description: 'Home electricity', category: 'energy', co2e: 3.1 },
-  { id: '4', date: new Date('2024-07-19'), description: 'Bus to city center', category: 'transport', co2e: 0.8 },
-  { id: '5', date: new Date('2024-07-19'), description: 'Online shopping', category: 'shopping', co2e: 5.4 },
-  { id: '6', date: new Date('2024-07-18'), description: 'Bike to work', category: 'transport', co2e: 0 },
+  { id: '3', date: new Date('2024-07-20'), description: 'Home electricity', category: 'electricity', co2e: 3.1 },
+  { id: '4', date: new Date('2024-07-19'), description: 'Bus to city center', category: 'travel', co2e: 0.8 },
+  { id: '6', date: new Date('2024-07-18'), description: 'Bike to work', category: 'travel', co2e: 0 },
   { id: '7', date: new Date('2024-07-18'), description: 'Vegan dinner', category: 'food', co2e: 0.5 },
 ];
 
@@ -25,12 +24,12 @@ export const mockEmissionStats = {
   daily: mockActivities
     .filter(a => a.date.getDate() === new Date().getDate() - 1) // yesterday
     .reduce((sum, a) => sum + a.co2e, 6.8),
-  weekly: mockActivities.reduce((sum, a) => sum + a.co2e, 13.5),
+  weekly: mockActivities.reduce((sum, a) => sum + a.co2e, 8.1),
 };
 
 export const mockChartData: EmissionDataPoint[] = [
-  { name: 'Last Wk', transport: 7.2, energy: 5.1, food: 3.9, shopping: 2.0 },
-  { name: 'This Wk', transport: 3.3, energy: 3.1, food: 1.7, shopping: 5.4 },
+  { name: 'Last Wk', transport: 7.2, energy: 5.1, food: 3.9 },
+  { name: 'This Wk', transport: 3.3, energy: 3.1, food: 1.7 },
 ];
 
 export const mockBadges: Badge[] = [

@@ -17,7 +17,6 @@ const SuggestCarbonReductionActionsInputSchema = z.object({
   transportEmissions: z.number().describe('Total carbon emissions from transportation activities in kgCO2e.'),
   energyEmissions: z.number().describe('Total carbon emissions from energy consumption in kgCO2e.'),
   foodEmissions: z.number().describe('Total carbon emissions from food consumption in kgCO2e.'),
-  shoppingEmissions: z.number().describe('Total carbon emissions from shopping activities in kgCO2e.'),
   recentActivities: z.string().describe('A summary of the user recent activities.'),
 });
 
@@ -55,7 +54,6 @@ const suggestCarbonReductionActionsPrompt = ai.definePrompt({
   - Transportation: {{{transportEmissions}}} kgCO2e
   - Energy: {{{energyEmissions}}} kgCO2e
   - Food: {{{foodEmissions}}} kgCO2e
-  - Shopping: {{{shoppingEmissions}}} kgCO2e
 
   Based on this information, provide a list of actionable suggestions the user can take to reduce their carbon footprint. Focus on the areas where they have the highest emissions. Be specific and provide concrete examples.
 

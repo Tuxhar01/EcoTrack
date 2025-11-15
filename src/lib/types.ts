@@ -3,8 +3,7 @@ export type EmissionCategory =
   | 'travel'
   | 'food'
   | 'household'
-  | 'waste'
-  | 'shopping';
+  | 'waste';
 
 export interface Activity {
   id: string;
@@ -19,7 +18,6 @@ export interface EmissionDataPoint {
   transport: number;
   energy: number;
   food: number;
-  shopping: number;
 }
 
 export interface Badge {

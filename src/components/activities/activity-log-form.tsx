@@ -58,7 +58,6 @@ const formSchema = z.object({
     'food',
     'household',
     'waste',
-    'shopping'
   ]),
   // Travel fields
   travelFuelType: z.string().optional(),
@@ -75,8 +74,6 @@ const formSchema = z.object({
   // Waste fields
   wasteGenerated: z.coerce.number().positive().optional(),
   wasteRecycled: z.coerce.number().nonnegative().optional(),
-  // Shopping
-  shoppingDescription: z.string().optional(),
 });
 
 type ActivityFormValues = z.infer<typeof formSchema>;
@@ -97,8 +94,6 @@ const categoryToDescription = (values: ActivityFormValues): string => {
         return `Used ${values.appliance} for ${values.hoursUsed} hours`;
     case 'waste':
         return `Generated ${values.wasteGenerated}kg of waste, recycled ${values.wasteRecycled}kg`;
-    case 'shopping':
-        return values.shoppingDescription || 'Shopping';
     default:
       return 'Logged an activity';
   }
@@ -124,7 +119,6 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
       hoursUsed: undefined,
       wasteGenerated: undefined,
       wasteRecycled: 0,
-      shoppingDescription: '',
     },
   });
 
@@ -470,24 +464,6 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
             />
           </>
         );
-        case 'shopping':
-        return (
-          <>
-            <FormField
-              control={form.control}
-              name="shoppingDescription"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., New clothes" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </>
-        );
       default:
         return null;
     }
@@ -549,11 +525,6 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
                       <SelectItem value="waste">
                         <div className="flex items-center gap-2">
                           <Trash2 className="h-4 w-4" /> Waste & Recycling
-                        </div>
-                      </SelectItem>
-                       <SelectItem value="shopping">
-                        <div className="flex items-center gap-2">
-                          <ShoppingBag className="h-4 w-4" /> Shopping
                         </div>
                       </SelectItem>
                     </SelectContent>

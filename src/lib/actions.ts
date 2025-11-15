@@ -40,7 +40,6 @@ const suggestionSchema = z.object({
   transportEmissions: z.number(),
   energyEmissions: z.number(),
   foodEmissions: z.number(),
-  shoppingEmissions: z.number(),
   recentActivities: z.string(),
 });
 

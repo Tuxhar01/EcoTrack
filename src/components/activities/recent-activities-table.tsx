@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { EmissionCategory, Activity } from '@/lib/types';
-import { Car, Zap, Leaf, ShoppingBag, Home, Trash2 } from 'lucide-react';
+import { Car, Zap, Leaf, Home, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 
 const categoryMap: { [key in EmissionCategory]: { icon: React.ElementType, label: string } } = {
@@ -19,7 +19,6 @@ const categoryMap: { [key in EmissionCategory]: { icon: React.ElementType, label
   food: { icon: Leaf, label: 'Food' },
   household: { icon: Home, label: 'Household' },
   waste: { icon: Trash2, label: 'Waste' },
-  shopping: { icon: ShoppingBag, label: 'Shopping' },
 };
 
 export function RecentActivitiesTable({ activities }: { activities: Activity[] }) {

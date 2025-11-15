@@ -13,7 +13,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { mockUserProfile } from '@/lib/data';
 import { Button } from './ui/button';
-import { Footprints, LayoutDashboard, Leaf, MessageSquare, UserCircle, Settings, LifeBuoy, LogOut } from 'lucide-react';
+import { Footprints, LayoutDashboard, Leaf, MessageSquare, UserCircle, Settings, LifeBuoy, LogOut, Lightbulb } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
@@ -21,6 +21,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 const navItems = [
   { href: '/', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/activities', icon: Footprints, label: 'Activities' },
+  { href: '/insights', icon: Lightbulb, label: 'Insights' },
   { href: '/chatbot', icon: MessageSquare, label: 'AI Coach' },
   { href: '/profile', icon: UserCircle, label: 'Profile' },
 ];
@@ -46,9 +47,8 @@ export function AppSidebar() {
         <SidebarMenu>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.href}>
-              <Link href={item.href} passHref>
+              <Link href={item.href}>
                 <SidebarMenuButton
-                  as="a"
                   isActive={pathname === item.href}
                   tooltip={item.label}
                 >

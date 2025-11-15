@@ -5,8 +5,8 @@ import { Car, Zap, Flame, Award, Utensils, Trophy } from 'lucide-react';
 const userAvatar = PlaceHolderImages.find(image => image.id === 'user-avatar-1');
 
 export const mockUserProfile: UserProfile = {
-  name: 'Alex Green',
-  email: 'alex.green@example.com',
+  name: 'Piyush',
+  email: 'piyush@gmail.com',
   joined: new Date('2023-10-01'),
   avatarUrl: userAvatar?.imageUrl || 'https://picsum.photos/seed/102/100/100',
 };

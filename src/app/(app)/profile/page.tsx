@@ -38,15 +38,9 @@ export default function ProfilePage() {
                 </CardHeader>
                 <CardContent>
                     <form className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="firstName">First Name</Label>
-                                <Input id="firstName" defaultValue={mockUserProfile.name.split(' ')[0]} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="lastName">Last Name</Label>
-                                <Input id="lastName" defaultValue={mockUserProfile.name.split(' ')[1]} />
-                            </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="fullName">Full Name</Label>
+                            <Input id="fullName" defaultValue={mockUserProfile.name} />
                         </div>
                         <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>

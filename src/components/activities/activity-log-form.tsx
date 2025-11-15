@@ -45,6 +45,7 @@ import {
   Vegan,
   GlassWater,
   ShoppingBag,
+  Flame,
 } from 'lucide-react';
 import { useState } from 'react';
 import { Activity } from '@/lib/types';
@@ -64,6 +65,8 @@ const formSchema = z.object({
   // Food fields
   mealType: z.string().optional(),
   quantity: z.coerce.number().positive().optional(),
+  fuelType: z.string().optional(),
+  cookingDuration: z.coerce.number().positive().optional(),
   // Electricity / Household fields
   appliance: z.string().optional(),
   hoursUsed: z.coerce.number().positive().optional(),
@@ -81,7 +84,11 @@ const categoryToDescription = (values: ActivityFormValues): string => {
     case 'travel':
       return `Travel by ${values.vehicleType} for ${values.distance} km`;
     case 'food':
-      return `${values.quantity} ${values.mealType} meal(s)`;
+      let desc = `${values.quantity} ${values.mealType} meal(s)`;
+      if (values.fuelType && values.cookingDuration) {
+        desc += ` cooked for ${values.cookingDuration}h using ${values.fuelType}`;
+      }
+      return desc;
     case 'electricity':
       return `Used electricity for ${values.hoursUsed} kWh`;
     case 'household':
@@ -108,6 +115,8 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
       distance: undefined,
       mealType: '',
       quantity: undefined,
+      fuelType: '',
+      cookingDuration: undefined,
       appliance: '',
       hoursUsed: undefined,
       wasteGenerated: undefined,
@@ -123,7 +132,6 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
 
   function onSubmit(values: ActivityFormValues) {
     const description = categoryToDescription(values);
-    const carbonValue = Math.random() * 5; // Placeholder
     
     onActivityLog({
       category: values.category,
@@ -132,7 +140,7 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
 
     toast({
       title: 'Activity Logged!',
-      description: `Your activity has been recorded with a footprint of ${carbonValue.toFixed(2)} kg CO₂e.`,
+      description: `Your activity has been recorded.`,
     });
     setOpen(false);
     form.reset();
@@ -281,6 +289,56 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
                   <FormLabel>Quantity (meals)</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="e.g., 1" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : +e.target.value)} value={field.value ?? ''}/>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="fuelType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cooking Fuel</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select fuel type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="cng">
+                        <div className="flex items-center gap-2">
+                          <Flame className="h-4 w-4" /> CNG
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="lpg">
+                        <div className="flex items-center gap-2">
+                          <Flame className="h-4 w-4" /> LPG
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="electricity">
+                        <div className="flex items-center gap-2">
+                          <Zap className="h-4 w-4" /> Electricity
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="cookingDuration"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cooking Duration (hours)</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="e.g., 1.5" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : +e.target.value)} value={field.value ?? ''}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -14,7 +14,13 @@ import { Leaf, Send, Loader2, Bot } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function ChatbotPage() {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: 'initial-greeting',
+      role: 'assistant',
+      content: "Hello! I'm your AI Coach. How can I help you with your carbon footprint today?",
+    }
+  ]);
   const [input, setInput] = useState('');
   const [isPending, startTransition] = useTransition();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -22,7 +28,7 @@ export default function ChatbotPage() {
 
   useEffect(() => {
     if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTo({ top: scrollAreaRef.current.scrollHeight, behavior: 'smooth' });
+      scrollAreaRef.current.scrollTo({ top: scrollArea.current.scrollHeight, behavior: 'smooth' });
     }
   }, [messages]);
 

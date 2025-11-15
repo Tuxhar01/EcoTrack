@@ -72,10 +72,6 @@ function HomePageContent() {
               EcoTrack
             </Link>
           </div>
-          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium ml-auto">
-            <Link className="transition-colors hover:text-foreground/80 text-foreground/60" href="/login">Login</Link>
-            <Button>Sign Up</Button>
-          </nav>
         </div>
       </header>
 

@@ -21,7 +21,7 @@ export interface EmissionDataPoint {
 }
 
 export interface Badge {
-  id: string;
+  id:string;
   name: string;
   description: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -39,4 +39,12 @@ export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
+}
+
+export interface Review {
+    id: string;
+    name: string;
+    avatarUrl: string;
+    rating: number;
+    comment: string;
 }

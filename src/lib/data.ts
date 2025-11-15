@@ -1,4 +1,4 @@
-import type { UserProfile, Activity, EmissionDataPoint, Badge } from './types';
+import type { UserProfile, Activity, EmissionDataPoint, Badge, Review } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 import { Car, Zap, Flame, Award, Utensils, Trophy } from 'lucide-react';
 
@@ -55,4 +55,28 @@ export const faqs = [
   "Is this app free to use?",
   "How much CO2 is emitted if I drive a petrol car for 20 km?",
   "What is the carbon footprint of eating non-veg food twice a day for a week?"
+];
+
+export const mockReviews: Review[] = [
+    {
+        id: '1',
+        name: 'Alex Johnson',
+        avatarUrl: 'https://picsum.photos/seed/rev1/100/100',
+        rating: 5,
+        comment: 'EcoTrack has completely changed the way I think about my daily impact. It\'s easy to use and incredibly insightful. Highly recommend!'
+    },
+    {
+        id: '2',
+        name: 'Samantha Bee',
+        avatarUrl: 'https://picsum.photos/seed/rev2/100/100',
+        rating: 4,
+        comment: 'A great app for anyone looking to be more environmentally conscious. The AI coach gives practical tips that are easy to follow.'
+    },
+    {
+        id: '3',
+        name: 'Mike Chen',
+        avatarUrl: 'https://picsum.photos/seed/rev3/100/100',
+        rating: 5,
+        comment: 'Finally, an app that makes carbon tracking simple and not a chore. The gamification features keep me motivated.'
+    }
 ];

@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Card,
@@ -16,7 +16,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
-import { Leaf, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { mockReviews } from '@/lib/data';
 import { Review } from '@/lib/types';
 import Autoplay from 'embla-carousel-autoplay';
@@ -219,10 +219,7 @@ function HomePageContent() {
       <footer className="mt-auto border-t bg-background py-4">
           <div className="container mx-auto px-4 text-center text-sm text-muted-foreground md:px-8">
             <p>&copy; {new Date().getFullYear()} EcoTrack. All rights reserved. v1.1</p>
-            <p className="mt-1">
-              Made with <span className="text-primary">♥</span> for a greener
-              planet.
-            </p>
+            <p className="mt-1">Sustainably Developed By T.E.</p>
           </div>
         </footer>
     </SidebarInset>

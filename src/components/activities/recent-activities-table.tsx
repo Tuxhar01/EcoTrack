@@ -11,14 +11,16 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { mockActivities } from '@/lib/data';
 import { EmissionCategory } from '@/lib/types';
-import { Car, Zap, Leaf, ShoppingCart } from 'lucide-react';
+import { Car, Zap, Leaf, ShoppingBag, Home, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 
-const categoryMap: { [key in EmissionCategory]: { icon: React.ElementType, label: string } } = {
-  transport: { icon: Car, label: 'Transport' },
-  energy: { icon: Zap, label: 'Energy' },
+const categoryMap: { [key in EmissionCategory]?: { icon: React.ElementType, label: string } } = {
+  travel: { icon: Car, label: 'Travel' },
+  electricity: { icon: Zap, label: 'Electricity' },
   food: { icon: Leaf, label: 'Food' },
-  shopping: { icon: ShoppingCart, label: 'Shopping' },
+  household: { icon: Home, label: 'Household' },
+  waste: { icon: Trash2, label: 'Waste' },
+  shopping: { icon: ShoppingBag, label: 'Shopping' },
 };
 
 export function RecentActivitiesTable() {
@@ -36,7 +38,9 @@ export function RecentActivitiesTable() {
       </TableHeader>
       <TableBody>
         {sortedActivities.map((activity) => {
-          const { icon: Icon, label } = categoryMap[activity.category];
+          const categoryInfo = categoryMap[activity.category];
+          if (!categoryInfo) return null;
+          const { icon: Icon, label } = categoryInfo;
           return (
             <TableRow key={activity.id}>
               <TableCell className="font-medium">{format(activity.date, 'MMM d, yyyy')}</TableCell>

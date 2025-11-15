@@ -1,4 +1,10 @@
-export type EmissionCategory = 'transport' | 'energy' | 'food' | 'shopping';
+export type EmissionCategory =
+  | 'electricity'
+  | 'travel'
+  | 'food'
+  | 'household'
+  | 'waste'
+  | 'shopping';
 
 export interface Activity {
   id: string;

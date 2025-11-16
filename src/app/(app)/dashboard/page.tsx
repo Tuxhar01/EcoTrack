@@ -8,6 +8,8 @@ import { StatsCards } from '@/components/dashboard/stats-cards';
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import type { Activity, WeeklyGoal } from '@/lib/types';
 import { subDays, startOfWeek, endOfWeek } from 'date-fns';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { TreeDeciduous } from 'lucide-react';
 
 export default function DashboardPage() {
   const { user } = useUser();
@@ -31,7 +33,7 @@ export default function DashboardPage() {
   const { data: weeklyGoals, isLoading: isLoadingGoals } = useCollection<WeeklyGoal>(weeklyGoalsQuery);
   const activeGoal = weeklyGoals?.[0];
 
-  const { stats, chartData } = useMemo(() => {
+  const { stats, chartData, totalEmissions } = useMemo(() => {
     const now = new Date();
     const startOfThisWeek = startOfWeek(now, { weekStartsOn: 1 });
     const endOfThisWeek = endOfWeek(now, { weekStartsOn: 1 });
@@ -41,11 +43,13 @@ export default function DashboardPage() {
 
     const initialStats = { daily: 0, weekly: 0, last_weekly: 0 };
     const initialChartData = { transport: 0, energy: 0, food: 0 };
+    let totalEmissions = 0;
 
     if (!activities) {
       return {
         stats: initialStats,
         chartData: initialChartData,
+        totalEmissions,
       };
     }
 
@@ -53,6 +57,8 @@ export default function DashboardPage() {
       (acc, activity) => {
         // Firestore timestamps can be objects with toDate(), so we need to handle that
         const activityDate = activity.date?.toDate ? activity.date.toDate() : new Date(activity.date);
+
+        acc.totalEmissions += activity.co2e;
 
         // Daily
         if (activityDate.toDateString() === yesterday.toDateString()) {
@@ -74,16 +80,24 @@ export default function DashboardPage() {
 
         return acc;
       },
-      { stats: initialStats, chartData: initialChartData }
+      { stats: initialStats, chartData: initialChartData, totalEmissions: 0 }
     );
 
     return {
       stats: calculatedData.stats,
       chartData: calculatedData.chartData,
+      totalEmissions: calculatedData.totalEmissions,
     };
   }, [activities]);
 
   const displayName = user?.displayName?.split(' ')[0] || 'User';
+
+  const treesNeeded = useMemo(() => {
+    const co2PerTreePerYear = 22; // kg
+    if (totalEmissions === 0) return 0;
+    return totalEmissions / co2PerTreePerYear;
+  }, [totalEmissions]);
+
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -94,8 +108,20 @@ export default function DashboardPage() {
       </div>
       <StatsCards stats={stats} weeklyGoal={activeGoal} isLoading={isLoadingActivities || isLoadingGoals} />
       <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-        <div className="xl:col-span-2">
-          <EmissionsChart {...chartData} />
+        <div className="xl:col-span-2 grid gap-4">
+           <EmissionsChart {...chartData} />
+           <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Environmental Outcome</CardTitle>
+              <TreeDeciduous className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{treesNeeded.toFixed(2)} trees</div>
+              <p className="text-xs text-muted-foreground">
+                are needed to absorb your total logged emissions of {totalEmissions.toFixed(2)} kg CO₂e over one year.
+              </p>
+            </CardContent>
+          </Card>
         </div>
         <GamificationPanel />
       </div>

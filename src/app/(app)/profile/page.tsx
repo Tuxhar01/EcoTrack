@@ -1,7 +1,8 @@
+
 'use client';
 
 import { useState } from 'react';
-import { mockUserProfile, mockActivities } from '@/lib/data';
+import { mockActivities } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,9 +14,21 @@ import { Activity, UserProfile } from '@/lib/types';
 import { Pencil } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+const initialProfileState: UserProfile = {
+  name: '',
+  email: '',
+  joined: new Date(),
+  avatarUrl: '',
+  phone: '',
+  address1: '',
+  address2: '',
+  city: '',
+  country: '',
+};
+
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState<UserProfile>(mockUserProfile);
+  const [profile, setProfile] = useState<UserProfile>(initialProfileState);
   const { toast } = useToast();
 
 
@@ -84,9 +97,9 @@ export default function ProfilePage() {
                 <CardContent className="pt-6 flex flex-col items-center text-center">
                     <Avatar className="h-24 w-24 mb-4">
                         <AvatarImage src={profile.avatarUrl} alt={profile.name} />
-                        <AvatarFallback>P</AvatarFallback>
+                        <AvatarFallback>{profile.name?.[0] || 'U'}</AvatarFallback>
                     </Avatar>
-                    <h2 className="text-xl font-semibold">{profile.name}</h2>
+                    <h2 className="text-xl font-semibold">{profile.name || 'User'}</h2>
                     <p className="text-sm text-muted-foreground">{profile.email}</p>
                     <p className="text-xs text-muted-foreground mt-2">Joined on {format(profile.joined, "MMMM d, yyyy")}</p>
                     <Button variant="outline" className="mt-4">Change Picture</Button>

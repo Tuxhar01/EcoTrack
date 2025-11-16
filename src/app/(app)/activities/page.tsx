@@ -9,8 +9,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { mockActivities } from '@/lib/data';
 import type { Activity } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Trash2 } from 'lucide-react';
 import { UpgradeAccountDialog } from '@/components/auth/upgrade-account-dialog';
+import { Button } from '@/components/ui/button';
 
 
 export default function ActivitiesPage() {
@@ -81,6 +82,39 @@ export default function ActivitiesPage() {
     });
   };
 
+  const handleClearHistory = async () => {
+    if (!user || !firestore || !activities || activities.length === 0) {
+      toast({
+        variant: 'destructive',
+        title: 'Nothing to clear',
+        description: 'There are no activities in your history.',
+      });
+      return;
+    }
+
+    try {
+      const batch = writeBatch(firestore);
+      const activitiesCol = collection(firestore, 'users', user.uid, 'activities');
+      activities.forEach(activity => {
+        const docRef = doc(activitiesCol, activity.id);
+        batch.delete(docRef);
+      });
+      await batch.commit();
+      toast({
+        title: 'History Cleared',
+        description: 'All your activities have been deleted.',
+      });
+    } catch (error) {
+      console.error('Error clearing history:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Could not clear your activity history.',
+      });
+    }
+  };
+
+
   return (
     <>
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -91,12 +125,18 @@ export default function ActivitiesPage() {
           <ActivityLogForm onActivityLog={handleAddActivity} />
         </div>
         <Card>
-          <CardHeader>
-            <CardTitle>Activity History</CardTitle>
-            <CardDescription>
-              A log of your recently tracked activities and their carbon footprint.
-              {user?.isAnonymous && ` (${(activities || []).length} / 10 entries used as Guest)`}
-            </CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+                <CardTitle>Activity History</CardTitle>
+                <CardDescription>
+                A log of your recently tracked activities and their carbon footprint.
+                {user?.isAnonymous && ` (${(activities || []).length} / 10 entries used as Guest)`}
+                </CardDescription>
+            </div>
+             <Button variant="outline" size="sm" onClick={handleClearHistory} disabled={!activities || activities.length === 0}>
+                <Trash2 className="mr-2 h-4 w-4" />
+                Clear History
+            </Button>
           </CardHeader>
           <CardContent>
             {isLoading || isSeeding ? (

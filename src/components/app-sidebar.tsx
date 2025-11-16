@@ -10,16 +10,18 @@ import {
   SidebarContent,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { mockUserProfile } from '@/lib/data';
-import { Footprints, LayoutDashboard, Leaf, MessageSquare, UserCircle, Settings, LifeBuoy, LogOut, Lightbulb, Info, Home } from 'lucide-react';
+import { Footprints, LayoutDashboard, MessageSquare, UserCircle, Settings, LifeBuoy, LogOut, Lightbulb, Info, Home, Target } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { useUser, useAuth } from '@/firebase';
+import { signOut } from 'firebase/auth';
 
 const navItems = [
   { href: '/', icon: Home, label: 'Home'},
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/activities', icon: Footprints, label: 'Activities' },
+  { href: '/goals', icon: Target, label: 'Goals' },
   { href: '/insights', icon: Lightbulb, label: 'Insights' },
   { href: '/chatbot', icon: MessageSquare, label: 'AI Coach' },
   { href: '/profile', icon: UserCircle, label: 'Profile' },
@@ -28,6 +30,16 @@ const navItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { user } = useUser();
+  const auth = useAuth();
+
+  const handleLogout = async () => {
+    if (auth) {
+      await signOut(auth);
+    }
+  }
+
+  const userInitial = user?.displayName?.[0] || user?.email?.[0] || 'U';
 
   return (
     <Sidebar>
@@ -55,12 +67,12 @@ export function AppSidebar() {
             <DropdownMenuTrigger asChild>
                  <div className="flex w-full cursor-pointer items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50">
                     <Avatar className="h-8 w-8">
-                        <AvatarImage src={mockUserProfile.avatarUrl} alt={mockUserProfile.name} />
-                        <AvatarFallback>P</AvatarFallback>
+                        {user?.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />}
+                        <AvatarFallback>{userInitial}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col truncate group-data-[collapsible=icon]:hidden">
-                        <span className="font-medium">{mockUserProfile.name}</span>
-                        <span className="text-xs text-muted-foreground">{mockUserProfile.email}</span>
+                        <span className="font-medium">{user?.displayName || 'Guest User'}</span>
+                        <span className="text-xs text-muted-foreground">{user?.email || 'guest'}</span>
                     </div>
                 </div>
             </DropdownMenuTrigger>
@@ -79,8 +91,8 @@ export function AppSidebar() {
                     <span>Support</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                    <Link href="/"><LogOut className="mr-2 h-4 w-4" /><span>Log out</span></Link>
+                <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" /><span>Log out</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

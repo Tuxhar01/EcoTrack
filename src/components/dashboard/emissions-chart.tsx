@@ -12,7 +12,7 @@ import {
   ChartContainer,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { mockChartData } from '@/lib/data';
+import { EmissionDataPoint } from '@/lib/types';
 
 const chartConfig = {
   transport: {
@@ -29,7 +29,7 @@ const chartConfig = {
   },
 };
 
-export function EmissionsChart() {
+export function EmissionsChart({ data }: { data: EmissionDataPoint[] }) {
   return (
     <Card>
       <CardHeader>
@@ -38,7 +38,7 @@ export function EmissionsChart() {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-          <BarChart data={mockChartData} accessibilityLayer>
+          <BarChart data={data} accessibilityLayer>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="name"

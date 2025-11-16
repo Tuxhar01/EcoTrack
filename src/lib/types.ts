@@ -7,7 +7,7 @@ export type EmissionCategory =
 
 export interface Activity {
   id: string;
-  date: Date;
+  date: any; // Can be Date or Firestore Timestamp
   description: string;
   category: EmissionCategory;
   co2e: number; // in kg
@@ -52,4 +52,15 @@ export interface Review {
     avatarUrl: string;
     rating: number;
     comment: string;
+}
+
+export interface WeeklyGoal {
+  id: string;
+  userId: string;
+  goal: number;
+  startDate: any;
+  endDate: any;
+  status: 'active' | 'completed' | 'failed';
+  actualEmission?: number;
+  createdAt: any;
 }

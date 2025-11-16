@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { mockActivities } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 import { Activity, UserProfile } from '@/lib/types';
 import { Pencil } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useUser } from '@/firebase';
 
 const initialProfileState: UserProfile = {
   name: '',
@@ -27,9 +28,26 @@ const initialProfileState: UserProfile = {
 };
 
 export default function ProfilePage() {
+  const { user } = useUser();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<UserProfile>(initialProfileState);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (user) {
+      setProfile({
+        name: user.displayName || '',
+        email: user.email || '',
+        joined: user.metadata.creationTime ? new Date(user.metadata.creationTime) : new Date(),
+        avatarUrl: user.photoURL || '',
+        phone: user.phoneNumber || '',
+        address1: '', // These would come from your Firestore document
+        address2: '',
+        city: '',
+        country: '',
+      });
+    }
+  }, [user]);
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,10 +115,10 @@ export default function ProfilePage() {
                 <CardContent className="pt-6 flex flex-col items-center text-center">
                     <Avatar className="h-24 w-24 mb-4">
                         <AvatarImage src={profile.avatarUrl} alt={profile.name} />
-                        <AvatarFallback>{profile.name?.[0] || 'U'}</AvatarFallback>
+                        <AvatarFallback>{profile.name?.[0] || 'G'}</AvatarFallback>
                     </Avatar>
-                    <h2 className="text-xl font-semibold">{profile.name || 'User'}</h2>
-                    <p className="text-sm text-muted-foreground">{profile.email}</p>
+                    <h2 className="text-xl font-bold">{profile.name || 'Guest User'}</h2>
+                    <p className="text-sm text-muted-foreground">{profile.email || 'guest@example.com'}</p>
                     <p className="text-xs text-muted-foreground mt-2">Joined on {format(profile.joined, "MMMM d, yyyy")}</p>
                     <Button variant="outline" className="mt-4">Change Picture</Button>
                 </CardContent>

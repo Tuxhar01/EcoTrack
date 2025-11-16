@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -39,7 +40,7 @@ export function AppSidebar() {
     }
   }
 
-  const userInitial = user?.displayName?.[0] || user?.email?.[0] || 'U';
+  const userInitial = user?.displayName?.[0] || user?.email?.[0] || 'G';
 
   return (
     <Sidebar>
@@ -72,7 +73,7 @@ export function AppSidebar() {
                     </Avatar>
                     <div className="flex flex-col truncate group-data-[collapsible=icon]:hidden">
                         <span className="font-medium">{user?.displayName || 'Guest User'}</span>
-                        <span className="text-xs text-muted-foreground">{user?.email || 'guest'}</span>
+                        <span className="text-xs text-muted-foreground">{user?.email}</span>
                     </div>
                 </div>
             </DropdownMenuTrigger>

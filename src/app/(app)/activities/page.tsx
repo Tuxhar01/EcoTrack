@@ -74,7 +74,7 @@ export default function ActivitiesPage() {
   const handleAddActivity = (newActivity: Omit<Activity, 'id' | 'date'>) => {
     if (!user || !firestore) return;
 
-    if (user.isAnonymous && activities && activities.length >= 5) {
+    if (user.isAnonymous && activities && activities.length >= 10) {
       setShowUpgradeDialog(true);
       return;
     }
@@ -135,7 +135,7 @@ export default function ActivitiesPage() {
                 <CardTitle>Activity History</CardTitle>
                 <CardDescription>
                 A log of your recently tracked activities and their carbon footprint.
-                {user?.isAnonymous && ` (${(activities || []).length} / 5 entries used as Guest)`}
+                {user?.isAnonymous && ` (${(activities || []).length} / 10 entries used as Guest)`}
                 </CardDescription>
             </div>
              <Button variant="outline" size="sm" onClick={handleClearHistory} disabled={!activities || activities.length === 0}>

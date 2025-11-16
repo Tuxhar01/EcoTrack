@@ -7,6 +7,7 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/s
 import { useUser } from '@/firebase';
 import { Leaf, LogIn } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import React from 'react';
 
 export default function AppLayout({
@@ -15,6 +16,9 @@ export default function AppLayout({
   children: React.ReactNode;
 }>) {
   const { user, isUserLoading } = useUser();
+  const pathname = usePathname();
+
+  const isChatbotPage = pathname === '/chatbot';
 
   return (
     <SidebarProvider>
@@ -42,7 +46,7 @@ export default function AppLayout({
             <div className="flex-1">
                 {children}
             </div>
-            <AppFooter />
+            {!isChatbotPage && <AppFooter />}
         </SidebarInset>
     </SidebarProvider>
   );

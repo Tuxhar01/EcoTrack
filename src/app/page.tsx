@@ -8,7 +8,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -17,13 +16,14 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
-import { Star, Leaf, LogIn } from 'lucide-react';
+import { Star, Leaf, LogIn, Footprints, Lightbulb, BarChart } from 'lucide-react';
 import { mockReviews } from '@/lib/data';
 import { Review } from '@/lib/types';
 import Autoplay from 'embla-carousel-autoplay';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarProvider, SidebarTrigger, SidebarInset, useSidebar } from '@/components/ui/sidebar';
 import { useUser } from '@/firebase';
+import Image from 'next/image';
 
 const mottos = [
   'Small steps, big impact.',
@@ -32,21 +32,20 @@ const mottos = [
 ];
 
 const animatedImages = [
-  'https://picsum.photos/seed/anim1/1200/600',
-  'https://picsum.photos/seed/anim2/1200/600',
-  'https://picsum.photos/seed/anim3/1200/600',
+  { src: 'https://picsum.photos/seed/nature1/1920/1080', hint: 'lush forest' },
+  { src: 'https://picsum.photos/seed/nature2/1920/1080', hint: 'mountain sunrise' },
+  { src: 'https://picsum.photos/seed/nature3/1920/1080', hint: 'clean energy' },
 ];
 
 function HomePageContent() {
   const [currentMottoIndex, setCurrentMottoIndex] = useState(0);
   const [reviews, setReviews] = useState<Review[]>(mockReviews);
-  const { toggleSidebar } = useSidebar();
   const { user, isUserLoading } = useUser();
 
   useEffect(() => {
     const mottoInterval = setInterval(() => {
       setCurrentMottoIndex((prevIndex) => (prevIndex + 1) % mottos.length);
-    }, 3000);
+    }, 4000);
 
     // This is a way to listen for new reviews from the rating page
     const handleStorageChange = () => {
@@ -66,8 +65,8 @@ function HomePageContent() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="flex flex-col min-h-screen bg-background">
+       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-14 items-center">
           <div className="mr-4 flex items-center">
             <SidebarTrigger className="mr-2" />
@@ -88,99 +87,106 @@ function HomePageContent() {
           </div>
         </div>
       </header>
-
+      
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative w-full h-[60vh] flex items-center justify-center text-center">
+        <section className="relative w-full h-[70vh] flex items-center justify-center text-center text-white">
           <Carousel
             className="absolute inset-0 w-full h-full"
             plugins={[Autoplay({ delay: 5000, stopOnInteraction: false })]}
             opts={{ loop: true }}
           >
             <CarouselContent>
-              {animatedImages.map((src, index) => (
+              {animatedImages.map((image, index) => (
                 <CarouselItem key={index}>
-                  <div
-                    className="w-full h-[60vh] bg-cover bg-center"
-                    style={{ backgroundImage: `url(${src})` }}
-                  />
+                  <div className="w-full h-[70vh] relative">
+                    <Image
+                      src={image.src}
+                      alt={`Background image ${index + 1}`}
+                      fill
+                      className="object-cover"
+                      data-ai-hint={image.hint}
+                      priority={index === 0}
+                    />
+                  </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
           </Carousel>
-          <div className="absolute inset-0 bg-black/50" />
-          <div className="relative z-10 p-4">
-            <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl font-headline">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/30" />
+          <div className="relative z-10 p-4 flex flex-col items-center">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl font-headline animate-fade-in-down">
               EcoTrack
             </h1>
-            <div className="mt-4 text-lg text-gray-300 h-6">
+            <div className="mt-4 text-lg text-gray-200 h-6">
                 <p className="transition-opacity duration-1000 ease-in-out">
                     {mottos[currentMottoIndex]}
                 </p>
             </div>
+            <Button asChild size="lg" className="mt-8 animate-fade-in-up">
+              <Link href="/signup">Get Started</Link>
+            </Button>
           </div>
         </section>
 
         {/* Features Section */}
-        <section id="features" className="container py-12 md:py-20">
-        <div className="grid gap-8 auto-rows-fr grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="hover:shadow-lg transition-shadow flex flex-col">
-              <CardHeader>
-                <CardTitle>Dashboard</CardTitle>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-muted-foreground mb-4">
-                  Visualize your carbon footprint at a glance.
-                </p>
-              </CardContent>
-              <CardFooter>
-                <Button asChild className="w-full">
-                  <Link href="/dashboard">Go to Dashboard</Link>
-                </Button>
-              </CardFooter>
-            </Card>
-            <Card className="hover:shadow-lg transition-shadow flex flex-col">
-              <CardHeader>
+        <section id="features" className="container py-16 md:py-24">
+          <h2 className="text-3xl font-bold text-center mb-12 font-headline">
+            Take Control of Your Carbon Footprint
+          </h2>
+          <div className="grid gap-8 auto-rows-fr grid-cols-1 md:grid-cols-3">
+            <Card className="hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center p-6">
+              <div className="p-4 bg-primary/10 rounded-full mb-4">
+                <Footprints className="h-8 w-8 text-primary" />
+              </div>
+              <CardHeader className="p-0">
                 <CardTitle>Log Activities</CardTitle>
               </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-muted-foreground mb-4">
-                  Track your daily activities to see their impact.
+              <CardContent className="p-0 mt-2 flex-grow">
+                <p className="text-muted-foreground">
+                  Easily track your daily travel, food, and energy consumption.
                 </p>
               </CardContent>
-              <CardFooter>
-                <Button asChild className="w-full">
-                  <Link href="/activities">Go to Activities</Link>
-                </Button>
-              </CardFooter>
             </Card>
-            <Card className="hover:shadow-lg transition-shadow flex flex-col">
-                <CardHeader>
-                  <CardTitle>More Features</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <p className="text-muted-foreground mb-4">
-                    Explore insights, chat with our AI, and more.
-                  </p>
-                </CardContent>
-                <CardFooter>
-                  <Button onClick={toggleSidebar} className="w-full">
-                    View All
-                  </Button>
-                </CardFooter>
-              </Card>
+            <Card className="hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center p-6">
+              <div className="p-4 bg-primary/10 rounded-full mb-4">
+                <BarChart className="h-8 w-8 text-primary" />
+              </div>
+              <CardHeader className="p-0">
+                <CardTitle>Visualize Your Impact</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0 mt-2 flex-grow">
+                <p className="text-muted-foreground">
+                  Interactive charts show your emission trends over time.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center p-6">
+              <div className="p-4 bg-primary/10 rounded-full mb-4">
+                <Lightbulb className="h-8 w-8 text-primary" />
+              </div>
+              <CardHeader className="p-0">
+                <CardTitle>Get AI Insights</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0 mt-2 flex-grow">
+                <p className="text-muted-foreground">
+                  Receive smart, personalized tips to reduce your footprint.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </section>
-
-        {/* Thought Card Section */}
-        <section className="bg-muted py-12 md:py-20">
+        
+        {/* Quote Section */}
+        <section className="bg-muted py-16 md:py-24">
             <div className="container">
-                <Card className="max-w-3xl mx-auto">
-                    <CardContent className="p-6 text-center">
-                        <blockquote className="text-xl italic text-foreground">
-                            "The greatest threat to our planet is the belief that someone else will save it."
+                <Card className="max-w-4xl mx-auto border-l-4 border-primary bg-background">
+                    <CardContent className="p-8">
+                        <blockquote className="text-xl italic text-foreground relative">
+                            <span className="absolute -top-4 -left-4 text-6xl text-primary/20 font-serif">“</span>
+                            The greatest threat to our planet is the belief that someone else will save it.
                         </blockquote>
-                        <p className="mt-4 font-semibold text-muted-foreground">- Robert Swan, Author</p>
+                        <p className="mt-4 font-semibold text-muted-foreground text-right">- Robert Swan</p>
                     </CardContent>
                 </Card>
             </div>
@@ -188,15 +194,18 @@ function HomePageContent() {
 
 
         {/* Reviews Section */}
-        <section id="reviews" className="container py-12 md:py-20">
-          <h2 className="text-3xl font-bold text-center mb-10 font-headline">
+        <section id="reviews" className="container py-16 md:py-24">
+          <h2 className="text-3xl font-bold text-center mb-12 font-headline">
             What Our Users Say
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {reviews.map((review) => (
-              <Card key={review.id} className="flex flex-col">
-                <CardContent className="pt-6 flex-1">
-                  <div className="flex items-center mb-4">
+              <Card key={review.id} className="flex flex-col bg-background/50">
+                <CardContent className="pt-6 flex-1 flex flex-col">
+                  <p className="text-muted-foreground text-sm flex-grow">
+                    "{review.comment}"
+                  </p>
+                   <div className="flex items-center mt-6">
                     <Avatar className="h-12 w-12 mr-4">
                       <AvatarImage src={review.avatarUrl} alt={review.name} />
                       <AvatarFallback>{review.name[0]}</AvatarFallback>
@@ -217,9 +226,6 @@ function HomePageContent() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-muted-foreground text-sm">
-                    "{review.comment}"
-                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -234,14 +240,14 @@ function HomePageContent() {
 
       <footer className="mt-auto border-t bg-background py-4">
           <div className="container mx-auto px-4 text-center text-sm text-muted-foreground md:px-8">
-            <p className="font-bold">&copy; {new Date().getFullYear()} EcoTrack. All rights reserved. v1.1</p>
+            <p className="font-bold">&copy; {new Date().getFullYear()} EcoTrack. All rights reserved.</p>
             <p className="mt-1 flex items-center justify-center gap-1 font-bold">
               Sustainably Developed By T.E.
               <Leaf className="h-4 w-4 text-primary" />
             </p>
           </div>
         </footer>
-      </div>
+    </div>
   );
 }
 

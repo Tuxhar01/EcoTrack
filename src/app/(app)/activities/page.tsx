@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { collection, writeBatch, doc } from 'firebase/firestore';
-import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { useUser, useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking } from '@/firebase';
 import { ActivityLogForm } from '@/components/activities/activity-log-form';
 import { RecentActivitiesTable } from '@/components/activities/recent-activities-table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { mockActivities } from '@/lib/data';
 import type { Activity } from '@/lib/types';
-import { addDocumentNonBlocking } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
@@ -39,7 +38,7 @@ export default function ActivitiesPage() {
             const docRef = doc(activitiesCol); // Create a new doc with a generated ID
             // Make sure date is a JS Date object before converting
             const activityDate = activity.date instanceof Date ? activity.date : new Date(activity.date);
-            batch.set(docRef, { ...activity, id: docRef.id, date: activityDate });
+            batch.set(docRef, { ...activity, userId: user.uid, id: docRef.id, date: activityDate });
           });
 
           await batch.commit();

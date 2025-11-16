@@ -64,7 +64,6 @@ const formSchema = z.object({
   vehicleType: z.string().optional(),
   distance: z.coerce.number().positive().optional(),
   // Food fields
-  quantity: z.coerce.number().positive().optional(),
   foodFuelType: z.string().optional(),
   cookingDuration: z.coerce.number().positive().optional(),
   // Household fields
@@ -136,18 +135,15 @@ const categoryToDescriptionAndCo2e = (values: ActivityFormValues): { description
       break;
     }
     case 'food': {
-      const quantity = values.quantity || 0;
       const cookingFuel = values.foodFuelType as keyof typeof emissionFactors.food.cooking | undefined;
       const cookingHours = values.cookingDuration || 0;
-      description = `${quantity} meal(s) consumed`;
+      description = `Logged a food activity`;
       
-      // Since mealType is removed, we'll use an average emission factor for a meal.
-      // Let's take the average of veg and non-veg.
       const averageMealEmission = (emissionFactors.food.veg + emissionFactors.food['non-veg']) / 2;
-      co2e += quantity * averageMealEmission;
+      co2e += averageMealEmission; 
 
       if (cookingFuel && cookingHours > 0) {
-        description += ` cooked for ${cookingHours}h using ${cookingFuel}`;
+        description = `Cooked for ${cookingHours}h using ${cookingFuel}`;
         co2e += cookingHours * emissionFactors.food.cooking[cookingFuel];
       }
       break;
@@ -193,7 +189,6 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
       travelFuelType: '',
       vehicleType: '',
       distance: undefined,
-      quantity: undefined,
       foodFuelType: '',
       cookingDuration: undefined,
       appliance: '',
@@ -344,19 +339,6 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
       case 'food':
         return (
           <>
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quantity (meals)</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="e.g., 1" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : +e.target.value)} value={field.value ?? ''}/>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
              <FormField
               control={form.control}
               name="foodFuelType"

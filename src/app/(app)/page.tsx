@@ -218,7 +218,6 @@ export default function HomePageContent() {
         </section>
       </main>
 
-      <AppFooter />
     </>
   );
 }

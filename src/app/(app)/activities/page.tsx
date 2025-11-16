@@ -31,7 +31,11 @@ export default function ActivitiesPage() {
 
   // Seed mock data if the collection is empty
   useEffect(() => {
-    if (user && firestore && !isLoading && activities && activities.length === 0 && !isSeeding) {
+    // This effect is now disabled to prevent seeding mock data.
+    // If you want to re-enable it, uncomment the code below and ensure
+    // mockActivities in `lib/data.ts` has data.
+    /*
+    if (user && firestore && !isLoading && activities && activities.length === 0 && !isSeeding && mockActivities.length > 0) {
       const seedData = async () => {
         setIsSeeding(true);
         try {
@@ -64,6 +68,7 @@ export default function ActivitiesPage() {
       // Timeout to prevent race condition on first load
       setTimeout(seedData, 1000);
     }
+    */
   }, [user, firestore, isLoading, activities, isSeeding, toast]);
 
   const handleAddActivity = (newActivity: Omit<Activity, 'id' | 'date'>) => {

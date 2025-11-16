@@ -72,8 +72,8 @@ export function AppSidebar() {
                         <AvatarFallback>{userInitial}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col truncate group-data-[collapsible=icon]:hidden">
-                        <span className="font-medium">{user?.displayName || 'Guest User'}</span>
-                        <span className="text-xs text-muted-foreground">{user?.email}</span>
+                        <span className="font-medium">{user?.displayName || (user?.isAnonymous ? 'Guest User' : 'No User')}</span>
+                        <span className="text-xs text-muted-foreground">{user?.isAnonymous ? '' : user?.email}</span>
                     </div>
                 </div>
             </DropdownMenuTrigger>

@@ -19,6 +19,7 @@ export default function AppLayout({
   const pathname = usePathname();
 
   const isChatbotPage = pathname === '/chatbot';
+  const isHomePage = pathname === '/';
 
   return (
     <SidebarProvider>
@@ -33,7 +34,15 @@ export default function AppLayout({
                     </Link>
                 </div>
                 <div className="w-full flex-1 flex justify-end">
-                    {!isUserLoading && user?.isAnonymous && (
+                    {!isUserLoading && !user && (
+                        <Button asChild variant="outline" size="sm">
+                            <Link href="/signup">
+                                <LogIn className="mr-2 h-4 w-4" />
+                                Login / Sign Up
+                            </Link>
+                        </Button>
+                    )}
+                     {!isUserLoading && user?.isAnonymous && !isHomePage && (
                         <Button asChild variant="outline" size="sm">
                             <Link href="/login">
                                 <LogIn className="mr-2 h-4 w-4" />

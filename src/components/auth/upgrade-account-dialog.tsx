@@ -31,7 +31,7 @@ export function UpgradeAccountDialog({ open, onOpenChange }: UpgradeAccountDialo
         <AlertDialogHeader>
           <AlertDialogTitle>Upgrade to a Full Account</AlertDialogTitle>
           <AlertDialogDescription>
-            You've reached the 10-activity limit for guest users. Please sign up for a free account to log unlimited activities and unlock all features.
+            You've reached the 5-activity limit for guest users. Please sign up for a free account to log unlimited activities and unlock all features.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

@@ -48,6 +48,54 @@ export default function AboutPage() {
                     <li><span className="font-semibold">Gamification:</span> Stay motivated by earning badges and maintaining activity streaks.</li>
                 </ul>
             </div>
+             <div className="pt-4">
+                <h3 className="text-xl font-semibold text-foreground">Version 1.2 – Coming Soon</h3>
+                <ul className="mt-4 space-y-4 text-muted-foreground">
+                    <li>
+                        <strong className="text-foreground">App Development (React Native)</strong>
+                        <ul className="list-disc list-inside pl-4 mt-2 space-y-1">
+                            <li>Add Text-to-Speech and Speech-to-Text features inside the chatbot.</li>
+                            <li>Integrate ElevenLabs & Deepgram API for smooth, high-quality voice interactions.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong className="text-foreground">User Authentication</strong>
+                        <ul className="list-disc list-inside pl-4 mt-2 space-y-1">
+                            <li>Enable secure and fast Google Sign-In to make user onboarding simple.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong className="text-foreground">Agriculture-Focused Features</strong>
+                        <ul className="list-disc list-inside pl-4 mt-2 space-y-2">
+                            <li>
+                                <strong>N₂O Emission Tracking:</strong>
+                                <p className="pl-4">Track nitrous oxide emissions caused by fertilizers and pesticides. N₂O is almost 300× more harmful than CO₂, making it a major contributor to agricultural greenhouse gas emissions.</p>
+                            </li>
+                            <li>
+                                <strong>Machinery Tracking:</strong>
+                                <p className="pl-4">Monitor and log ploughing and irrigation hours to understand energy usage and field activity patterns.</p>
+                            </li>
+                             <li>
+                                <strong className="text-foreground">Advanced System for Large-Scale Farmers</strong>
+                                <ul className="list-disc list-inside pl-4 mt-2 space-y-2">
+                                    <li>
+                                        <strong>NDVI (Vegetation Health Monitoring):</strong>
+                                        <p className="pl-4">NDVI is a satellite-based index that measures how healthy and green crops are. It helps detect crop stress early and monitor field health over time.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Soil Moisture Detection:</strong>
+                                        <p className="pl-4">Detects how much water is present in the soil using IoT sensors or satellite data to avoid over-irrigation and protect crops from drought.</p>
+                                    </li>
+                                     <li>
+                                        <strong>Biomass Estimation:</strong>
+                                        <p className="pl-4">Estimate crop growth and predict yield using satellite data, drone images, or machine-learning models to track productivity.</p>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </CardContent>
       </Card>
     </main>

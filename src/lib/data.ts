@@ -21,7 +21,6 @@ export const mockActivities: Activity[] = [
   { id: '2', date: new Date('2024-07-20'), description: 'Lunch (Chicken Salad)', category: 'food', co2e: 1.2 },
   { id: '3', date: new Date('2024-07-20'), description: 'Home electricity', category: 'electricity', co2e: 3.1 },
   { id: '4', date: new Date('2024-07-19'), description: 'Bus to city center', category: 'travel', co2e: 0.8 },
-  { id: '6', date: new Date('2024-07-18'), description: 'Bike to work', category: 'travel', co2e: 0 },
 ];
 
 export const mockEmissionStats = {

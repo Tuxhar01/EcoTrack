@@ -111,7 +111,7 @@ export default function SignUpPage() {
         title: 'Welcome, Guest!',
         description: 'You are browsing as a guest. Your data will be temporary.',
       });
-      router.push('/dashboard');
+      router.push('/');
     } catch (error: any) {
        if (error.code === 'auth/operation-not-allowed') {
          toast({
@@ -200,3 +200,4 @@ export default function SignUpPage() {
     </div>
   );
 }
+

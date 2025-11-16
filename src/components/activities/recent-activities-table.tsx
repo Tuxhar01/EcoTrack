@@ -15,7 +15,6 @@ import { format } from 'date-fns';
 
 const categoryMap: { [key in EmissionCategory]: { icon: React.ElementType, label: string } } = {
   travel: { icon: Car, label: 'Travel' },
-  electricity: { icon: Zap, label: 'Electricity' },
   food: { icon: Utensils, label: 'Food' },
   household: { icon: Home, label: 'Household' },
   waste: { icon: Trash2, label: 'Waste' },

@@ -54,7 +54,6 @@ import { doc } from 'firebase/firestore';
 
 const formSchema = z.object({
   category: z.enum([
-    'electricity',
     'travel',
     'food',
     'household',
@@ -69,7 +68,7 @@ const formSchema = z.object({
   quantity: z.coerce.number().positive().optional(),
   foodFuelType: z.string().optional(),
   cookingDuration: z.coerce.number().positive().optional(),
-  // Electricity / Household fields
+  // Household fields
   appliance: z.string().optional(),
   hoursUsed: z.coerce.number().positive().optional(),
   // Waste fields
@@ -81,7 +80,6 @@ type ActivityFormValues = z.infer<typeof formSchema>;
 
 // Emission factors (kg CO2e per unit)
 const emissionFactors = {
-  electricity: 0.82, // kg CO2e per kWh
   travel: {
     petrol: { car: 0.192, bike: 0.113 },
     diesel: { car: 0.171, bus: 0.027 },
@@ -106,6 +104,7 @@ const emissionFactors = {
     'washing-machine': 0.6,
     cooler: 0.2,
     heater: 2.0,
+    electricity: 0.82, // kg CO2e per kWh for general usage
   },
   waste: {
     generated: 0.5, // kg CO2e per kg
@@ -153,18 +152,17 @@ const categoryToDescriptionAndCo2e = (values: ActivityFormValues): { description
       }
       break;
     }
-    case 'electricity': {
-      const usage = values.hoursUsed || 0;
-      description = `Used electricity for ${usage} kWh`;
-      co2e = usage * emissionFactors.electricity;
-      break;
-    }
     case 'household': {
       const appliance = values.appliance as keyof typeof emissionFactors.household | undefined;
       const hours = values.hoursUsed || 0;
-      description = `Used ${values.appliance} for ${hours} hours`;
-      if (appliance && appliance in emissionFactors.household) {
-        co2e = hours * emissionFactors.household[appliance];
+      if (appliance === 'electricity') {
+        description = `Used electricity for ${hours} kWh`;
+        co2e = hours * emissionFactors.household.electricity;
+      } else {
+        description = `Used ${values.appliance} for ${hours} hours`;
+        if (appliance && appliance in emissionFactors.household) {
+          co2e = hours * emissionFactors.household[appliance];
+        }
       }
       break;
     }
@@ -216,6 +214,11 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
     name: 'travelFuelType',
   });
 
+  const selectedAppliance = useWatch({
+    control: form.control,
+    name: 'appliance',
+  });
+
   function onSubmit(values: ActivityFormValues) {
     const { description, co2e } = categoryToDescriptionAndCo2e(values);
     
@@ -235,24 +238,6 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
 
   const renderCategoryFields = () => {
     switch (selectedCategory) {
-      case 'electricity':
-        return (
-          <>
-            <FormField
-              control={form.control}
-              name="hoursUsed"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Electricity Usage (kWh)</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="e.g., 2.5" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : +e.target.value)} value={field.value ?? ''} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </>
-        );
       case 'travel':
         return (
           <>
@@ -480,17 +465,18 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
               name="appliance"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Appliance</FormLabel>
+                  <FormLabel>Type</FormLabel>
                    <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select an appliance" />
+                        <SelectValue placeholder="Select a household item" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
+                      <SelectItem value="electricity">General Electricity</SelectItem>
                       <SelectItem value="ac">AC</SelectItem>
                       <SelectItem value="washing-machine">Washing Machine</SelectItem>
                       <SelectItem value="cooler">Cooler</SelectItem>
@@ -506,9 +492,9 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
               name="hoursUsed"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Hours of Usage</FormLabel>
+                  <FormLabel>{selectedAppliance === 'electricity' ? 'Usage (kWh)' : 'Hours of Usage'}</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 3" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : +e.target.value)} value={field.value ?? ''}/>
+                    <Input type="number" placeholder={selectedAppliance === 'electricity' ? "e.g., 10" : "e.g., 3"} {...field} onChange={e => field.onChange(e.target.value === '' ? '' : +e.target.value)} value={field.value ?? ''}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -585,11 +571,6 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="electricity">
-                        <div className="flex items-center gap-2">
-                          <Zap className="h-4 w-4" /> Electricity
-                        </div>
-                      </SelectItem>
                       <SelectItem value="travel">
                         <div className="flex items-center gap-2">
                           <Car className="h-4 w-4" /> Travel

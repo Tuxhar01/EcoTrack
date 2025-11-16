@@ -69,7 +69,7 @@ export default function DashboardPage() {
         if (activityDate >= startOfThisWeek && activityDate <= endOfThisWeek) {
           acc.stats.weekly += activity.co2e;
           if (activity.category === 'travel') acc.chartData.thisWeek.transport += activity.co2e;
-          if (activity.category === 'electricity' || activity.category === 'household') acc.chartData.thisWeek.energy += activity.co2e;
+          if (activity.category === 'household') acc.chartData.thisWeek.energy += activity.co2e;
           if (activity.category === 'food') acc.chartData.thisWeek.food += activity.co2e;
         }
 
@@ -77,7 +77,7 @@ export default function DashboardPage() {
         if (activityDate >= startOfLastWeek && activityDate <= endOfLastWeek) {
           acc.stats.last_weekly += activity.co2e;
           if (activity.category === 'travel') acc.chartData.lastWeek.transport += activity.co2e;
-          if (activity.category === 'electricity' || activity.category === 'household') acc.chartData.lastWeek.energy += activity.co2e;
+          if (activity.category === 'household') acc.chartData.lastWeek.energy += activity.co2e;
           if (activity.category === 'food') acc.chartData.lastWeek.food += activity.co2e;
         }
 

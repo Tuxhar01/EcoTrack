@@ -1,5 +1,4 @@
 export type EmissionCategory =
-  | 'electricity'
   | 'travel'
   | 'food'
   | 'household'

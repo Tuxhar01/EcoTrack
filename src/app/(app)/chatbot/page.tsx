@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect, useTransition } from 'react';
@@ -74,10 +75,10 @@ export default function ChatbotPage() {
   };
 
   return (
-    <main className="flex flex-1 flex-col p-4 md:p-8 h-[calc(100vh-12rem)]">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
-        <div className="lg:col-span-2 flex flex-col h-full">
-          <Card className="flex-1 flex flex-col shadow-lg max-h-[80%]">
+    <main className="flex flex-1 flex-col p-4 md:p-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-[calc(100vh-10rem)]">
+        <div className="lg:col-span-2 flex flex-col">
+          <Card className="flex-1 flex flex-col shadow-lg">
             <CardHeader className="border-b">
               <CardTitle className="flex items-center gap-2 font-headline">
                 <Bot /> EcoAssist

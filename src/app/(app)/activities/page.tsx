@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { collection, writeBatch } from 'firebase/firestore';
+import { collection, writeBatch, doc } from 'firebase/firestore';
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { ActivityLogForm } from '@/components/activities/activity-log-form';
 import { RecentActivitiesTable } from '@/components/activities/recent-activities-table';

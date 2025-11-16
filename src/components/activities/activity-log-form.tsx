@@ -64,7 +64,6 @@ const formSchema = z.object({
   vehicleType: z.string().optional(),
   distance: z.coerce.number().positive().optional(),
   // Food fields
-  mealType: z.string().optional(),
   quantity: z.coerce.number().positive().optional(),
   foodFuelType: z.string().optional(),
   cookingDuration: z.coerce.number().positive().optional(),
@@ -137,15 +136,16 @@ const categoryToDescriptionAndCo2e = (values: ActivityFormValues): { description
       break;
     }
     case 'food': {
-      const meal = values.mealType as keyof typeof emissionFactors.food | undefined;
       const quantity = values.quantity || 0;
       const cookingFuel = values.foodFuelType as keyof typeof emissionFactors.food.cooking | undefined;
       const cookingHours = values.cookingDuration || 0;
-      description = `${quantity} ${values.mealType} meal(s)`;
+      description = `${quantity} meal(s) consumed`;
+      
+      // Since mealType is removed, we'll use an average emission factor for a meal.
+      // Let's take the average of veg and non-veg.
+      const averageMealEmission = (emissionFactors.food.veg + emissionFactors.food['non-veg']) / 2;
+      co2e += quantity * averageMealEmission;
 
-      if (meal && meal in emissionFactors.food) {
-        co2e += quantity * (emissionFactors.food as any)[meal];
-      }
       if (cookingFuel && cookingHours > 0) {
         description += ` cooked for ${cookingHours}h using ${cookingFuel}`;
         co2e += cookingHours * emissionFactors.food.cooking[cookingFuel];
@@ -193,7 +193,6 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
       travelFuelType: '',
       vehicleType: '',
       distance: undefined,
-      mealType: '',
       quantity: undefined,
       foodFuelType: '',
       cookingDuration: undefined,
@@ -345,53 +344,6 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
       case 'food':
         return (
           <>
-            <FormField
-              control={form.control}
-              name="mealType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Meal Type</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a meal type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="veg">
-                        <div className="flex items-center gap-2">
-                          <Utensils className="h-4 w-4" /> Vegetarian
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="non-veg">
-                        <div className="flex items-center gap-2">
-                          <Beef className="h-4 w-4" /> Non-Vegetarian
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="vegan">
-                        <div className="flex items-center gap-2">
-                          <Vegan className="h-4 w-4" /> Vegan
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="dairy-heavy">
-                        <div className="flex items-center gap-2">
-                          <GlassWater className="h-4 w-4" /> Dairy-heavy
-                        </div>
-                      </SelectItem>
-                       <SelectItem value="processed">
-                        <div className="flex items-center gap-2">
-                          <ShoppingBag className="h-4 w-4" /> Processed Food
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="quantity"

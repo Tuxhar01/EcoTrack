@@ -21,7 +21,7 @@ import { mockReviews } from '@/lib/data';
 import { Review } from '@/lib/types';
 import Autoplay from 'embla-carousel-autoplay';
 import { AppSidebar } from '@/components/app-sidebar';
-import { SidebarProvider, SidebarTrigger, SidebarInset, useSidebar } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { useUser } from '@/firebase';
 import Image from 'next/image';
 import { AppFooter } from '@/components/footer';
@@ -48,7 +48,6 @@ function HomePageContent() {
       setCurrentMottoIndex((prevIndex) => (prevIndex + 1) % mottos.length);
     }, 4000);
 
-    // This is a way to listen for new reviews from the rating page
     const handleStorageChange = () => {
       const newReviews = localStorage.getItem('ecotrack-reviews');
       if (newReviews) {
@@ -260,3 +259,5 @@ export default function HomePage() {
     </SidebarProvider>
   )
 }
+
+    

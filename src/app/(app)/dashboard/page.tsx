@@ -40,22 +40,16 @@ export default function DashboardPage() {
     const yesterday = subDays(now, 1);
 
     const initialStats = { daily: 0, weekly: 0, last_weekly: 0 };
-    const initialChartData = {
-      thisWeek: { transport: 0, energy: 0, food: 0 },
-      lastWeek: { transport: 0, energy: 0, food: 0 },
-    };
+    const initialChartData = { transport: 0, energy: 0, food: 0 };
 
     if (!activities) {
       return {
         stats: initialStats,
-        chartData: [
-          { name: 'Last Wk', ...initialChartData.lastWeek },
-          { name: 'This Wk', ...initialChartData.thisWeek },
-        ],
+        chartData: initialChartData,
       };
     }
 
-    const calculatedStats = activities.reduce(
+    const calculatedData = activities.reduce(
       (acc, activity) => {
         // Firestore timestamps can be objects with toDate(), so we need to handle that
         const activityDate = activity.date?.toDate ? activity.date.toDate() : new Date(activity.date);
@@ -68,17 +62,14 @@ export default function DashboardPage() {
         // This Week
         if (activityDate >= startOfThisWeek && activityDate <= endOfThisWeek) {
           acc.stats.weekly += activity.co2e;
-          if (activity.category === 'travel') acc.chartData.thisWeek.transport += activity.co2e;
-          if (activity.category === 'household') acc.chartData.thisWeek.energy += activity.co2e;
-          if (activity.category === 'food') acc.chartData.thisWeek.food += activity.co2e;
+          if (activity.category === 'travel') acc.chartData.transport += activity.co2e;
+          if (activity.category === 'household') acc.chartData.energy += activity.co2e;
+          if (activity.category === 'food') acc.chartData.food += activity.co2e;
         }
 
         // Last Week
         if (activityDate >= startOfLastWeek && activityDate <= endOfLastWeek) {
           acc.stats.last_weekly += activity.co2e;
-          if (activity.category === 'travel') acc.chartData.lastWeek.transport += activity.co2e;
-          if (activity.category === 'household') acc.chartData.lastWeek.energy += activity.co2e;
-          if (activity.category === 'food') acc.chartData.lastWeek.food += activity.co2e;
         }
 
         return acc;
@@ -87,11 +78,8 @@ export default function DashboardPage() {
     );
 
     return {
-      stats: calculatedStats.stats,
-      chartData: [
-        { name: 'Last Wk', ...calculatedStats.chartData.lastWeek },
-        { name: 'This Wk', ...calculatedStats.chartData.thisWeek },
-      ],
+      stats: calculatedData.stats,
+      chartData: calculatedData.chartData,
     };
   }, [activities]);
 
@@ -107,7 +95,7 @@ export default function DashboardPage() {
       <StatsCards stats={stats} weeklyGoal={activeGoal} isLoading={isLoadingActivities || isLoadingGoals} />
       <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
         <div className="xl:col-span-2">
-          <EmissionsChart data={chartData} />
+          <EmissionsChart {...chartData} />
         </div>
         <GamificationPanel />
       </div>

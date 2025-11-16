@@ -12,12 +12,12 @@ export interface Activity {
   co2e: number; // in kg
 }
 
-export interface EmissionDataPoint {
-  name: string;
+export interface EmissionChartData {
   transport: number;
   energy: number;
   food: number;
 }
+
 
 export interface Badge {
   id:string;

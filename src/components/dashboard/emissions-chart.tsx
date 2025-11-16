@@ -1,6 +1,6 @@
 'use client';
 
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { Pie, PieChart, Tooltip } from 'recharts';
 import {
   Card,
   CardContent,
@@ -12,7 +12,7 @@ import {
   ChartContainer,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { EmissionDataPoint } from '@/lib/types';
+import { useMemo } from 'react';
 
 const chartConfig = {
   transport: {
@@ -29,30 +29,74 @@ const chartConfig = {
   },
 };
 
-export function EmissionsChart({ data }: { data: EmissionDataPoint[] }) {
+interface EmissionsPieChartProps {
+    transport: number;
+    energy: number;
+    food: number;
+}
+
+export function EmissionsChart({ transport, energy, food }: EmissionsPieChartProps) {
+  const chartData = useMemo(() => [
+      { name: 'Transport', value: transport, fill: 'var(--color-transport)' },
+      { name: 'Energy', value: energy, fill: 'var(--color-energy)' },
+      { name: 'Food', value: food, fill: 'var(--color-food)' },
+  ], [transport, energy, food]);
+    
+  const totalEmissions = transport + energy + food;
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Emission Breakdown</CardTitle>
-        <CardDescription>This week vs. last week (kg CO₂e)</CardDescription>
+        <CardDescription>This week's emissions by category (kg CO₂e)</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-          <BarChart data={data} accessibilityLayer>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="name"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-            />
-            <YAxis />
-            <Tooltip content={<ChartTooltipContent />} />
-            <Legend />
-            <Bar dataKey="transport" fill="var(--color-transport)" radius={4} />
-            <Bar dataKey="energy" fill="var(--color-energy)" radius={4} />
-            <Bar dataKey="food" fill="var(--color-food)" radius={4} />
-          </BarChart>
+            {totalEmissions > 0 ? (
+                <PieChart accessibilityLayer>
+                    <Tooltip content={<ChartTooltipContent hideLabel />} />
+                    <Pie
+                    data={chartData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    labelLine={false}
+                    label={({
+                        cx,
+                        cy,
+                        midAngle,
+                        innerRadius,
+                        outerRadius,
+                        percent,
+                    }) => {
+                        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                        const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
+                        const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+
+                        if (percent < 0.05) return null; // Don't render label for small slices
+
+                        return (
+                        <text
+                            x={x}
+                            y={y}
+                            fill="white"
+                            textAnchor={x > cx ? 'start' : 'end'}
+                            dominantBaseline="central"
+                            className="text-xs font-bold"
+                        >
+                            {`${(percent * 100).toFixed(0)}%`}
+                        </text>
+                        );
+                    }}
+                    />
+                </PieChart>
+            ) : (
+                <div className="flex justify-center items-center h-full min-h-[200px]">
+                    <p className="text-muted-foreground">Log some activities to see your emission breakdown.</p>
+                </div>
+            )}
         </ChartContainer>
       </CardContent>
     </Card>

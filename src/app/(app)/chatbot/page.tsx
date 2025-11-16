@@ -76,7 +76,7 @@ export default function ChatbotPage() {
 
   return (
     <main className="flex flex-1 flex-col p-4 md:p-8">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-[calc(100vh-10rem)]">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-[calc(70vh-7rem)]">
         <div className="lg:col-span-2 flex flex-col">
           <Card className="flex-1 flex flex-col shadow-lg">
             <CardHeader className="border-b">

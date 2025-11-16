@@ -109,7 +109,7 @@ function HomePageContent() {
 
         {/* Features Section */}
         <section id="features" className="container py-12 md:py-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
             <Card className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle>Dashboard</CardTitle>

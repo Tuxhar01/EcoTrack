@@ -17,12 +17,13 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
-import { Star, Leaf } from 'lucide-react';
+import { Star, Leaf, LogIn } from 'lucide-react';
 import { mockReviews } from '@/lib/data';
 import { Review } from '@/lib/types';
 import Autoplay from 'embla-carousel-autoplay';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarProvider, SidebarTrigger, SidebarInset, useSidebar } from '@/components/ui/sidebar';
+import { useUser } from '@/firebase';
 
 const mottos = [
   'Small steps, big impact.',
@@ -40,6 +41,7 @@ function HomePageContent() {
   const [currentMottoIndex, setCurrentMottoIndex] = useState(0);
   const [reviews, setReviews] = useState<Review[]>(mockReviews);
   const { toggleSidebar } = useSidebar();
+  const { user, isUserLoading } = useUser();
 
   useEffect(() => {
     const mottoInterval = setInterval(() => {
@@ -73,6 +75,16 @@ function HomePageContent() {
               <Link href="/" className="text-lg font-bold font-headline">
                 EcoTrack
               </Link>
+            </div>
+             <div className="w-full flex-1 flex justify-end">
+                {!isUserLoading && user?.isAnonymous && (
+                    <Button asChild variant="outline" size="sm">
+                        <Link href="/login">
+                            <LogIn className="mr-2 h-4 w-4" />
+                            Login / Sign Up
+                        </Link>
+                    </Button>
+                )}
             </div>
           </div>
         </header>

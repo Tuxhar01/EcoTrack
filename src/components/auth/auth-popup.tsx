@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useAuth, useUser } from '@/firebase';
-import { GoogleAuthProvider, signInWithPopup, signInAnonymously } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, signInAnonymously, linkWithCredential, EmailAuthProvider } from 'firebase/auth';
 import { ChromeIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -21,9 +21,12 @@ export function AuthPopup() {
   const { toast } = useToast();
   const [isSigningIn, setIsSigningIn] = useState(false);
 
+  // The popup should only be open if the user is not logged in at all.
+  // It should not appear for anonymous/guest users.
   const isOpen = !isUserLoading && !user;
 
   const handleGoogleSignIn = async () => {
+    if (!auth) return;
     setIsSigningIn(true);
     const provider = new GoogleAuthProvider();
     try {
@@ -53,6 +56,7 @@ export function AuthPopup() {
   };
 
   const handleGuestSignIn = async () => {
+    if (!auth) return;
     setIsSigningIn(true);
     try {
       await signInAnonymously(auth);

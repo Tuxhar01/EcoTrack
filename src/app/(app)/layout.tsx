@@ -23,7 +23,8 @@ export default function AppLayout({
             <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6 sticky top-0 z-30">
                 <SidebarTrigger />
                  <div className="flex items-center gap-2">
-                    <Link href="/" className="text-lg font-bold font-headline">
+                    <Link href="/" className="flex items-center gap-2 text-lg font-bold font-headline">
+                        <Leaf className="h-6 w-6 text-primary" />
                         EcoTrack
                     </Link>
                 </div>

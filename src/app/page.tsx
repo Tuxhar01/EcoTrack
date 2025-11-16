@@ -166,19 +166,21 @@ function HomePageContent() {
                 </CardContent>
                 </Card>
             </Link>
-            <Card className="hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center p-6">
-              <div className="p-4 bg-primary/10 rounded-full mb-4">
-                <Lightbulb className="h-8 w-8 text-primary" />
-              </div>
-              <CardHeader className="p-0">
-                <CardTitle>Get AI Insights</CardTitle>
-              </CardHeader>
-              <CardContent className="p-0 mt-2 flex-grow">
-                <p className="text-muted-foreground">
-                  Receive smart, personalized tips to reduce your footprint.
-                </p>
-              </CardContent>
-            </Card>
+            <Link href="/insights" className="flex">
+              <Card className="hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center p-6 w-full">
+                <div className="p-4 bg-primary/10 rounded-full mb-4">
+                  <Lightbulb className="h-8 w-8 text-primary" />
+                </div>
+                <CardHeader className="p-0">
+                  <CardTitle>Get AI Insights</CardTitle>
+                </CardHeader>
+                <CardContent className="p-0 mt-2 flex-grow">
+                  <p className="text-muted-foreground">
+                    Receive smart, personalized tips to reduce your footprint.
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
         </section>
         

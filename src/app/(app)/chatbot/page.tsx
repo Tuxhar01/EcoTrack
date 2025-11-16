@@ -18,7 +18,7 @@ export default function ChatbotPage() {
     {
       id: 'initial-greeting',
       role: 'assistant',
-      content: "Hello! I'm your AI Coach. How can I help you with your carbon footprint today?",
+      content: "Hello! I'm EcoAssist. How can I help you with your carbon footprint today?",
     }
   ]);
   const [input, setInput] = useState('');
@@ -77,16 +77,16 @@ export default function ChatbotPage() {
           <Card className="flex-1 flex flex-col shadow-lg">
             <CardHeader className="border-b">
               <CardTitle className="flex items-center gap-2 font-headline">
-                <Bot /> AI Coach
+                <Bot /> EcoAssist
               </CardTitle>
             </CardHeader>
             <CardContent className="flex-1 p-0 flex flex-col">
               <ScrollArea className="flex-1 p-6 h-96 md:h-auto" ref={scrollAreaRef}>
                 <div className="space-y-4">
-                  {messages.length === 0 && (
+                  {messages.length === 1 && (
                     <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
                         <Leaf className="h-12 w-12 mb-4 text-primary"/>
-                        <p className="text-lg">Welcome to your AI Coach!</p>
+                        <p className="text-lg">Welcome to EcoAssist!</p>
                         <p>Ask me anything about your carbon footprint.</p>
                     </div>
                   )}
@@ -138,7 +138,7 @@ export default function ChatbotPage() {
                   <Input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Ask about your carbon footprint..."
+                    placeholder="Ask EcoAssist..."
                     disabled={isPending}
                     autoComplete="off"
                   />

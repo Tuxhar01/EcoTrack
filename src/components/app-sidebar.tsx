@@ -23,7 +23,7 @@ const navItems = [
   { href: '/activities', icon: Footprints, label: 'Activities' },
   { href: '/goals', icon: Target, label: 'Goals' },
   { href: '/insights', icon: Lightbulb, label: 'Insights' },
-  { href: '/chatbot', icon: MessageSquare, label: 'AI Coach' },
+  { href: '/chatbot', icon: MessageSquare, label: 'EcoAssist' },
   { href: '/profile', icon: UserCircle, label: 'Profile' },
   { href: '/about', icon: Info, label: 'About' },
 ];

@@ -136,19 +136,21 @@ function HomePageContent() {
             Take Control of Your Carbon Footprint
           </h2>
           <div className="grid gap-8 auto-rows-fr grid-cols-1 md:grid-cols-3">
-            <Card className="hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center p-6">
-              <div className="p-4 bg-primary/10 rounded-full mb-4">
-                <Footprints className="h-8 w-8 text-primary" />
-              </div>
-              <CardHeader className="p-0">
-                <CardTitle>Log Activities</CardTitle>
-              </CardHeader>
-              <CardContent className="p-0 mt-2 flex-grow">
-                <p className="text-muted-foreground">
-                  Easily track your daily travel, food, and energy consumption.
-                </p>
-              </CardContent>
-            </Card>
+            <Link href="/activities" className="flex">
+                <Card className="hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center p-6 w-full">
+                <div className="p-4 bg-primary/10 rounded-full mb-4">
+                    <Footprints className="h-8 w-8 text-primary" />
+                </div>
+                <CardHeader className="p-0">
+                    <CardTitle>Log Activities</CardTitle>
+                </CardHeader>
+                <CardContent className="p-0 mt-2 flex-grow">
+                    <p className="text-muted-foreground">
+                    Easily track your daily travel, food, and energy consumption.
+                    </p>
+                </CardContent>
+                </Card>
+            </Link>
             <Card className="hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center p-6">
               <div className="p-4 bg-primary/10 rounded-full mb-4">
                 <BarChart className="h-8 w-8 text-primary" />

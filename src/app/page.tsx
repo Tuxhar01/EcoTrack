@@ -116,7 +116,7 @@ function HomePageContent() {
           </Carousel>
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/30" />
           <div className="relative z-10 p-4 flex flex-col items-center">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl font-headline animate-fade-in-down">
+            <h1 className="text-4xl font-bold italic tracking-tight sm:text-5xl md:text-6xl font-headline animate-fade-in-down">
               EcoTrack
             </h1>
             <div className="mt-4 text-lg text-gray-200 h-6">

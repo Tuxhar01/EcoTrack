@@ -10,7 +10,7 @@ import {
   SidebarContent,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Footprints, LayoutDashboard, MessageSquare, UserCircle, Settings, LifeBuoy, LogOut, Lightbulb, Info, Home, Target } from 'lucide-react';
+import { Footprints, LayoutDashboard, MessageSquare, UserCircle, Settings, LifeBuoy, LogOut, Lightbulb, Info, Home, Target, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
@@ -79,21 +79,34 @@ export function AppSidebar() {
             <DropdownMenuContent className="w-56 mb-2 ml-2" side="top" align="start">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                    <Link href="/profile"><UserCircle className="mr-2 h-4 w-4" /><span>Profile</span></Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                    <LifeBuoy className="mr-2 h-4 w-4" />
-                    <span>Support</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" /><span>Log out</span>
-                </DropdownMenuItem>
+                {user && !user.isAnonymous ? (
+                    <>
+                        <DropdownMenuItem asChild>
+                            <Link href="/profile"><UserCircle className="mr-2 h-4 w-4" /><span>Profile</span></Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Settings className="mr-2 h-4 w-4" />
+                            <span>Settings</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <LifeBuoy className="mr-2 h-4 w-4" />
+                            <span>Support</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={handleLogout}>
+                            <LogOut className="mr-2 h-4 w-4" /><span>Log out</span>
+                        </DropdownMenuItem>
+                    </>
+                ) : (
+                    <>
+                        <DropdownMenuItem asChild>
+                           <Link href="/login"><LogIn className="mr-2 h-4 w-4" /><span>Login</span></Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                           <Link href="/signup"><UserCircle className="mr-2 h-4 w-4" /><span>Sign Up</span></Link>
+                        </DropdownMenuItem>
+                    </>
+                )}
             </DropdownMenuContent>
         </DropdownMenu>
       </SidebarFooter>

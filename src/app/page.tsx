@@ -24,6 +24,7 @@ import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarProvider, SidebarTrigger, SidebarInset, useSidebar } from '@/components/ui/sidebar';
 import { useUser } from '@/firebase';
 import Image from 'next/image';
+import { AppFooter } from '@/components/footer';
 
 const mottos = [
   'Small steps, big impact.',
@@ -238,15 +239,7 @@ function HomePageContent() {
         </section>
       </main>
 
-      <footer className="mt-auto border-t bg-background py-4">
-          <div className="container mx-auto px-4 text-center text-sm text-muted-foreground md:px-8">
-            <p className="font-bold">&copy; {new Date().getFullYear()} EcoTrack. All rights reserved.</p>
-            <p className="mt-1 flex items-center justify-center gap-1 font-bold">
-              Sustainably Developed By T.E.
-              <Leaf className="h-4 w-4 text-primary" />
-            </p>
-          </div>
-        </footer>
+      <AppFooter />
     </div>
   );
 }

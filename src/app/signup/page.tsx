@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useAuth, useUser } from '@/firebase';
-import { createUserWithEmailAndPassword, GoogleAuthProvider, linkWithPopup, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, GoogleAuthProvider, linkWithPopup, signInWithPopup, signInAnonymously, EmailAuthProvider } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { ChromeIcon, Leaf, Loader2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
@@ -43,6 +43,7 @@ export default function SignUpPage() {
   const auth = useAuth();
   const { user } = useUser();
   const [isLoading, setIsLoading] = useState(false);
+  const [isGuestLoading, setIsGuestLoading] = useState(false);
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(formSchema),
@@ -101,6 +102,36 @@ export default function SignUpPage() {
     }
   };
 
+  const handleGuestSignIn = async () => {
+    if (!auth) return;
+    setIsGuestLoading(true);
+    try {
+      await signInAnonymously(auth);
+       toast({
+        title: 'Welcome, Guest!',
+        description: 'You are browsing as a guest. Your data will be temporary.',
+      });
+      router.push('/dashboard');
+    } catch (error: any) {
+       if (error.code === 'auth/operation-not-allowed') {
+         toast({
+          variant: 'destructive',
+          title: 'Sign-in Failed',
+          description: 'Guest Sign-in is not enabled. Please enable it in your Firebase project settings.',
+        });
+       } else {
+         console.error("Anonymous sign-in error", error);
+         toast({
+          variant: 'destructive',
+          title: 'Sign-in Failed',
+          description: 'Could not sign in as a guest. Please try again.',
+        });
+       }
+    } finally {
+      setIsGuestLoading(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
       <Card className="w-full max-w-sm">
@@ -140,17 +171,23 @@ export default function SignUpPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full" disabled={isLoading || isGuestLoading}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Sign Up
               </Button>
             </form>
           </Form>
           <Separator className="my-6" />
-           <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading}>
-            <ChromeIcon className="mr-2 h-4 w-4" />
-            Sign up with Google
-          </Button>
+          <div className="space-y-4">
+            <Button variant="secondary" className="w-full" onClick={handleGuestSignIn} disabled={isLoading || isGuestLoading}>
+                {isGuestLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Continue as Guest
+            </Button>
+            <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading || isGuestLoading}>
+              <ChromeIcon className="mr-2 h-4 w-4" />
+              Sign up with Google
+            </Button>
+          </div>
 
           <div className="mt-6 text-center text-sm">
             Already have an account?{' '}

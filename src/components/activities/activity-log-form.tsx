@@ -92,7 +92,6 @@ const emissionFactors = {
     vegan: 1.5,
     processed: 4.0,
     cooking: {
-      cng: 0.18, // per hour
       lpg: 0.22, // per hour
       electricity: 0.82 // per kWh, assuming 1 hour uses 1 kWh
     }
@@ -355,11 +354,6 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="cng">
-                        <div className="flex items-center gap-2">
-                          <Flame className="h-4 w-4" /> CNG
-                        </div>
-                      </SelectItem>
                       <SelectItem value="lpg">
                         <div className="flex items-center gap-2">
                           <Flame className="h-4 w-4" /> LPG

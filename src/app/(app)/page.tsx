@@ -22,7 +22,6 @@ import { Review } from '@/lib/types';
 import Autoplay from 'embla-carousel-autoplay';
 import { useUser } from '@/firebase';
 import Image from 'next/image';
-import { AppFooter } from '@/components/footer';
 
 const mottos = [
   'Small steps, big impact.',
@@ -36,7 +35,7 @@ const animatedImages = [
   { src: 'https://picsum.photos/seed/nature3/1920/1080', hint: 'clean energy' },
 ];
 
-export default function HomePageContent() {
+export default function HomePage() {
   const [currentMottoIndex, setCurrentMottoIndex] = useState(0);
   const [reviews, setReviews] = useState<Review[]>(mockReviews);
 
@@ -62,7 +61,6 @@ export default function HomePageContent() {
   }, []);
 
   return (
-    <>
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative w-full h-[70vh] flex items-center justify-center text-center text-white">
@@ -218,7 +216,5 @@ export default function HomePageContent() {
           </div>
         </section>
       </main>
-
-    </>
   );
 }

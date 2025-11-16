@@ -151,19 +151,21 @@ function HomePageContent() {
                 </CardContent>
                 </Card>
             </Link>
-            <Card className="hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center p-6">
-              <div className="p-4 bg-primary/10 rounded-full mb-4">
-                <BarChart className="h-8 w-8 text-primary" />
-              </div>
-              <CardHeader className="p-0">
-                <CardTitle>Visualize Your Impact</CardTitle>
-              </CardHeader>
-              <CardContent className="p-0 mt-2 flex-grow">
-                <p className="text-muted-foreground">
-                  Interactive charts show your emission trends over time.
-                </p>
-              </CardContent>
-            </Card>
+            <Link href="/dashboard" className="flex">
+                <Card className="hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center p-6 w-full">
+                <div className="p-4 bg-primary/10 rounded-full mb-4">
+                    <BarChart className="h-8 w-8 text-primary" />
+                </div>
+                <CardHeader className="p-0">
+                    <CardTitle>Visualize Your Impact</CardTitle>
+                </CardHeader>
+                <CardContent className="p-0 mt-2 flex-grow">
+                    <p className="text-muted-foreground">
+                    Interactive charts show your emission trends over time.
+                    </p>
+                </CardContent>
+                </Card>
+            </Link>
             <Card className="hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center p-6">
               <div className="p-4 bg-primary/10 rounded-full mb-4">
                 <Lightbulb className="h-8 w-8 text-primary" />

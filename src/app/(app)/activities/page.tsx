@@ -71,7 +71,7 @@ export default function ActivitiesPage() {
     */
   }, [user, firestore, isLoading, activities, isSeeding, toast]);
 
-  const handleAddActivity = (newActivity: Omit<Activity, 'id' | 'date'>) => {
+  const handleAddActivity = (newActivity: Omit<Activity, 'id'>) => {
     if (!user || !firestore) return;
 
     if (user.isAnonymous && activities && activities.length >= 10) {
@@ -83,7 +83,6 @@ export default function ActivitiesPage() {
     addDocumentNonBlocking(activitiesCol, {
       ...newActivity,
       userId: user.uid,
-      date: new Date(),
     });
   };
 

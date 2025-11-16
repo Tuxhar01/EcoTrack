@@ -27,6 +27,8 @@ import {
   SheetFooter,
   SheetClose,
 } from '@/components/ui/sheet';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
@@ -40,17 +42,15 @@ import {
   Train,
   Bike,
   Plane,
-  Beef,
-  Vegan,
-  GlassWater,
-  ShoppingBag,
   Flame,
   Fuel,
-  Utensils
+  Utensils,
+  CalendarIcon,
 } from 'lucide-react';
 import { useState } from 'react';
 import type { Activity } from '@/lib/types';
-import { doc } from 'firebase/firestore';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   category: z.enum([
@@ -59,6 +59,7 @@ const formSchema = z.object({
     'household',
     'waste',
   ]),
+  date: z.date().optional(),
   // Travel fields
   travelFuelType: z.string().optional(),
   vehicleType: z.string().optional(),
@@ -86,11 +87,6 @@ const emissionFactors = {
     flight: 0.255, // domestic flight
   },
   food: {
-    'non-veg': 7.19, // kg CO2e per meal
-    'dairy-heavy': 2.5,
-    veg: 2.0,
-    vegan: 1.5,
-    processed: 4.0,
     cooking: {
       lpg: 0.22, // per hour
       electricity: 0.82 // per kWh, assuming 1 hour uses 1 kWh
@@ -138,7 +134,7 @@ const categoryToDescriptionAndCo2e = (values: ActivityFormValues): { description
       const cookingHours = values.cookingDuration || 0;
       description = `Logged a food activity`;
       
-      const averageMealEmission = (emissionFactors.food.veg + emissionFactors.food['non-veg']) / 2;
+      const averageMealEmission = 2.5; // Average kg CO2e per meal
       co2e += averageMealEmission; 
 
       if (cookingFuel && cookingHours > 0) {
@@ -177,7 +173,7 @@ const categoryToDescriptionAndCo2e = (values: ActivityFormValues): { description
 };
 
 
-export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: Omit<Activity, 'id' | 'date'>) => void }) {
+export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: Omit<Activity, 'id'>) => void }) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
@@ -185,6 +181,7 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
     resolver: zodResolver(formSchema),
     defaultValues: {
       category: 'travel',
+      date: new Date(),
       travelFuelType: '',
       vehicleType: '',
       distance: undefined,
@@ -219,6 +216,7 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
       category: values.category,
       description,
       co2e,
+      date: values.date || new Date(),
     });
 
     toast({
@@ -528,7 +526,47 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
 
             {renderCategoryFields()}
 
-            <SheetFooter className="pt-4">
+            <SheetFooter className="pt-4 flex-row justify-end space-x-2">
+                <FormField
+                control={form.control}
+                name="date"
+                render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                    <Popover>
+                        <PopoverTrigger asChild>
+                        <FormControl>
+                            <Button
+                            variant={'outline'}
+                            className={cn(
+                                'w-[240px] pl-3 text-left font-normal',
+                                !field.value && 'text-muted-foreground'
+                            )}
+                            >
+                            {field.value ? (
+                                format(field.value, 'PPP')
+                            ) : (
+                                <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                        </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) =>
+                            date > new Date() || date < new Date('1900-01-01')
+                            }
+                            initialFocus
+                        />
+                        </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
               <SheetClose asChild>
                 <Button variant="outline">Cancel</Button>
               </SheetClose>

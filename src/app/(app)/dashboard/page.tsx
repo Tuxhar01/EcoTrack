@@ -6,7 +6,7 @@ import { EmissionsChart } from '@/components/dashboard/emissions-chart';
 import { GamificationPanel } from '@/components/dashboard/gamification-panel';
 import { StatsCards } from '@/components/dashboard/stats-cards';
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import type { Activity } from '@/lib/types';
+import type { Activity, WeeklyGoal } from '@/lib/types';
 import { subDays, startOfWeek, endOfWeek } from 'date-fns';
 
 export default function DashboardPage() {
@@ -28,7 +28,7 @@ export default function DashboardPage() {
     );
   }, [user, firestore]);
 
-  const { data: weeklyGoals, isLoading: isLoadingGoals } = useCollection(weeklyGoalsQuery);
+  const { data: weeklyGoals, isLoading: isLoadingGoals } = useCollection<WeeklyGoal>(weeklyGoalsQuery);
   const activeGoal = weeklyGoals?.[0];
 
   const { stats, chartData } = useMemo(() => {
@@ -57,7 +57,8 @@ export default function DashboardPage() {
 
     const calculatedStats = activities.reduce(
       (acc, activity) => {
-        const activityDate = activity.date.toDate ? activity.date.toDate() : new Date(activity.date);
+        // Firestore timestamps can be objects with toDate(), so we need to handle that
+        const activityDate = activity.date?.toDate ? activity.date.toDate() : new Date(activity.date);
 
         // Daily
         if (activityDate.toDateString() === yesterday.toDateString()) {
@@ -68,7 +69,7 @@ export default function DashboardPage() {
         if (activityDate >= startOfThisWeek && activityDate <= endOfThisWeek) {
           acc.stats.weekly += activity.co2e;
           if (activity.category === 'travel') acc.chartData.thisWeek.transport += activity.co2e;
-          if (activity.category === 'electricity') acc.chartData.thisWeek.energy += activity.co2e;
+          if (activity.category === 'electricity' || activity.category === 'household') acc.chartData.thisWeek.energy += activity.co2e;
           if (activity.category === 'food') acc.chartData.thisWeek.food += activity.co2e;
         }
 
@@ -76,7 +77,7 @@ export default function DashboardPage() {
         if (activityDate >= startOfLastWeek && activityDate <= endOfLastWeek) {
           acc.stats.last_weekly += activity.co2e;
           if (activity.category === 'travel') acc.chartData.lastWeek.transport += activity.co2e;
-          if (activity.category === 'electricity') acc.chartData.lastWeek.energy += activity.co2e;
+          if (activity.category === 'electricity' || activity.category === 'household') acc.chartData.lastWeek.energy += activity.co2e;
           if (activity.category === 'food') acc.chartData.lastWeek.food += activity.co2e;
         }
 
@@ -94,8 +95,7 @@ export default function DashboardPage() {
     };
   }, [activities]);
 
-  const { user: mockUserProfile } = useUser();
-  const displayName = mockUserProfile?.displayName?.split(' ')[0] || 'User';
+  const displayName = user?.displayName?.split(' ')[0] || 'User';
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -104,7 +104,7 @@ export default function DashboardPage() {
           Welcome back, {displayName}!
         </h1>
       </div>
-      <StatsCards stats={stats} weeklyGoal={activeGoal?.goal} isLoading={isLoadingActivities || isLoadingGoals} />
+      <StatsCards stats={stats} weeklyGoal={activeGoal} isLoading={isLoadingActivities || isLoadingGoals} />
       <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
         <div className="xl:col-span-2">
           <EmissionsChart data={chartData} />

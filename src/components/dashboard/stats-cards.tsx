@@ -6,19 +6,20 @@ import { Footprints, Target, Calendar, PlusCircle } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+import type { WeeklyGoal } from '@/lib/types';
 
 interface StatsCardsProps {
-    stats?: {
+    stats: {
         daily: number;
         weekly: number;
         last_weekly: number;
     };
-    weeklyGoal?: number;
+    weeklyGoal?: WeeklyGoal;
     isLoading: boolean;
 }
 
 export function StatsCards({ stats, weeklyGoal, isLoading }: StatsCardsProps) {
-  const progress = weeklyGoal && stats ? (stats.weekly / weeklyGoal) * 100 : 0;
+  const progress = weeklyGoal && stats ? (stats.weekly / weeklyGoal.goal) * 100 : 0;
   const dailyDiff = stats ? ((stats.daily - 5) / 5) * 100 : 0; // Mocked previous day
   const weeklyDiff = stats && stats.last_weekly > 0 ? ((stats.weekly - stats.last_weekly) / stats.last_weekly) * 100 : (stats ? 100 : 0);
 
@@ -70,7 +71,7 @@ export function StatsCards({ stats, weeklyGoal, isLoading }: StatsCardsProps) {
           <Footprints className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{stats?.daily.toFixed(1)} kg CO₂e</div>
+          <div className="text-2xl font-bold">{stats.daily.toFixed(1)} kg CO₂e</div>
           <p className="text-xs text-muted-foreground">
              {dailyDiff.toFixed(1)}% from the day before
           </p>
@@ -84,7 +85,7 @@ export function StatsCards({ stats, weeklyGoal, isLoading }: StatsCardsProps) {
           <Calendar className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{stats?.weekly.toFixed(1)} kg CO₂e</div>
+          <div className="text-2xl font-bold">{stats.weekly.toFixed(1)} kg CO₂e</div>
           <p className="text-xs text-muted-foreground">
             {weeklyDiff >= 0 ? '+' : ''}{weeklyDiff.toFixed(1)}% from last week
           </p>

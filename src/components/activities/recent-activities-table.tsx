@@ -21,8 +21,15 @@ const categoryMap: { [key in EmissionCategory]: { icon: React.ElementType, label
   waste: { icon: Trash2, label: 'Waste' },
 };
 
+const toDate = (date: any): Date => {
+    if (!date) return new Date();
+    if (date.toDate) return date.toDate(); // Firestore Timestamp
+    if (typeof date === 'string' || typeof date === 'number') return new Date(date);
+    return date;
+}
+
 export function RecentActivitiesTable({ activities }: { activities: Activity[] }) {
-  const sortedActivities = [...activities].sort((a, b) => b.date.getTime() - a.date.getTime());
+  const sortedActivities = [...activities].sort((a, b) => toDate(b.date).getTime() - toDate(a.date).getTime());
 
   return (
     <Table>
@@ -41,7 +48,7 @@ export function RecentActivitiesTable({ activities }: { activities: Activity[] }
           const { icon: Icon, label } = categoryInfo;
           return (
             <TableRow key={activity.id}>
-              <TableCell className="font-medium">{format(activity.date, 'MMM d, yyyy')}</TableCell>
+              <TableCell className="font-medium">{format(toDate(activity.date), 'MMM d, yyyy')}</TableCell>
               <TableCell>{activity.description}</TableCell>
               <TableCell>
                 <Badge variant="outline" className="flex items-center gap-1 w-fit">

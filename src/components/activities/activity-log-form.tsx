@@ -49,7 +49,8 @@ import {
   Utensils
 } from 'lucide-react';
 import { useState } from 'react';
-import { Activity } from '@/lib/types';
+import type { Activity } from '@/lib/types';
+import { doc } from 'firebase/firestore';
 
 const formSchema = z.object({
   category: z.enum([
@@ -242,7 +243,7 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
               name="hoursUsed"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Hourly Usage (kWh)</FormLabel>
+                  <FormLabel>Electricity Usage (kWh)</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="e.g., 2.5" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : +e.target.value)} value={field.value ?? ''} />
                   </FormControl>

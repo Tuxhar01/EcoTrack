@@ -80,9 +80,9 @@ type ActivityFormValues = z.infer<typeof formSchema>;
 // Emission factors (kg CO2e per unit)
 const emissionFactors = {
   travel: {
-    petrol: { car: 0.192, bike: 0.113 },
-    diesel: { car: 0.171, bus: 0.027 },
-    ev: { car: 0.05, bike: 0.01, bus: 0.015 },
+    petrol: { car: 0.192, bike: 0.113, scooter: 0.08, auto: 0.1, truck: 0.3 },
+    diesel: { car: 0.171, bus: 0.027, truck: 0.25 },
+    ev: { car: 0.05, bike: 0.01, bus: 0.015, scooter: 0.008, auto: 0.012, truck: 0.08 },
     train: 0.041, // generic train
     flight: 0.255, // domestic flight
   },
@@ -311,7 +311,21 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
                           <Bus className="h-4 w-4" /> Bus
                         </div>
                       </SelectItem>
-                      
+                       <SelectItem value="scooter">
+                        <div className="flex items-center gap-2">
+                          <Bike className="h-4 w-4" /> Scooter
+                        </div>
+                      </SelectItem>
+                       <SelectItem value="auto">
+                        <div className="flex items-center gap-2">
+                          <Car className="h-4 w-4" /> Auto
+                        </div>
+                      </SelectItem>
+                       <SelectItem value="truck">
+                        <div className="flex items-center gap-2">
+                          <Car className="h-4 w-4" /> Truck
+                        </div>
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -331,6 +345,7 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
                 </FormItem>
               )}
             />
+            <p className="text-xs text-muted-foreground">More vehicle categories & engine sizes coming in the next update.</p>
           </>
         );
       case 'food':

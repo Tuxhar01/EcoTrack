@@ -46,8 +46,9 @@ import {
   Fuel,
   Utensils,
   CalendarIcon,
+  MapPin,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import type { Activity } from '@/lib/types';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -73,6 +74,7 @@ const formSchema = z.object({
   // Waste fields
   wasteGenerated: z.coerce.number().positive().optional(),
   wasteRecycled: z.coerce.number().nonnegative().optional(),
+  co2e: z.coerce.number().positive().optional(),
 });
 
 type ActivityFormValues = z.infer<typeof formSchema>;
@@ -117,7 +119,9 @@ const categoryToDescriptionAndCo2e = (values: ActivityFormValues): { description
       const vehicle = values.vehicleType as keyof typeof emissionFactors.travel.petrol | undefined;
       description = `Travel by ${values.vehicleType} for ${distance} km`;
 
-      if (fuel && vehicle) {
+      if (values.co2e) {
+        co2e = values.co2e;
+      } else if (fuel && vehicle) {
          if (fuel === 'train' || fuel === 'flight') {
            co2e = distance * emissionFactors.travel[fuel];
          } else if (fuel === 'petrol' || fuel === 'diesel' || fuel === 'ev') {
@@ -176,6 +180,8 @@ const categoryToDescriptionAndCo2e = (values: ActivityFormValues): { description
 export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: Omit<Activity, 'id'>) => void }) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
+  const [isTracking, setIsTracking] = useState(false);
+  const startCoords = useRef<GeolocationCoordinates | null>(null);
 
   const form = useForm<ActivityFormValues>({
     resolver: zodResolver(formSchema),
@@ -227,11 +233,72 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
     form.reset();
   }
 
+  const handleToggleTracking = () => {
+    if (isTracking) {
+      // Stop tracking
+      setIsTracking(false);
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const endCoords = position.coords;
+          if (startCoords.current) {
+            // Send to backend to calculate distance
+            const response = await fetch('/api/distance', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                start: { latitude: startCoords.current.latitude, longitude: startCoords.current.longitude },
+                end: { latitude: endCoords.latitude, longitude: endCoords.longitude },
+              }),
+            });
+
+            const data = await response.json();
+            if (data.distance) {
+              form.setValue('distance', data.distance);
+              // CO2e will be calculated on submit based on distance and vehicle type
+            }
+          }
+        },
+        () => {
+          toast({
+            title: 'Error',
+            description: 'Could not get current location.',
+            variant: 'destructive',
+          });
+        }
+      );
+    } else {
+      // Start tracking
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          startCoords.current = position.coords;
+          setIsTracking(true);
+          toast({
+            title: 'Tracking Started',
+            description: 'Your journey is now being tracked.',
+          });
+        },
+        () => {
+          toast({
+            title: 'Error',
+            description: 'Could not get current location. Please ensure you have location services enabled.',
+            variant: 'destructive',
+          });
+        }
+      );
+    }
+  };
+
   const renderCategoryFields = () => {
     switch (selectedCategory) {
       case 'travel':
         return (
           <>
+            <Button onClick={handleToggleTracking} variant="outline" className="w-full">
+              <MapPin className="mr-2 h-4 w-4" />
+              {isTracking ? 'Stop Tracking' : 'Track with GPS'}
+            </Button>
             <FormField
               control={form.control}
               name="travelFuelType"
@@ -340,6 +407,19 @@ export function ActivityLogForm({ onActivityLog }: { onActivityLog: (activity: O
                   <FormLabel>Distance (km)</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="e.g., 50" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : +e.target.value)} value={field.value ?? ''}/>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="co2e"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>CO₂e (kg)</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="e.g., 12.34" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : +e.target.value)} value={field.value ?? ''} readOnly />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
